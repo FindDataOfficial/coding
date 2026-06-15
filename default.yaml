@@ -1,0 +1,158 @@
+# ============================================================
+# Default Configuration — coding-skills
+# ============================================================
+# This file defines the default model and database settings.
+# Override per-environment via env vars or local overrides.
+
+# ----------------------------------------------------------
+# Models — LLM / AI model registry
+# ----------------------------------------------------------
+models:
+
+  # The default model to use (must match an id in the registry)
+  default: claude-sonnet
+
+  # Provider-level config: shared credentials and base URLs
+  providers:
+    anthropic:
+      api_key_env: ANTHROPIC_API_KEY
+      base_url: https://api.anthropic.com
+
+    openai:
+      api_key_env: OPENAI_API_KEY
+      base_url: https://api.openai.com/v1
+
+    local:
+      # No API key needed for local models (e.g. Ollama, vLLM)
+      base_url: http://localhost:11434/v1
+
+  # Model registry — define as many models as you need
+  registry:
+    # --- Anthropic ---
+    - id: claude-sonnet
+      provider: anthropic
+      name: claude-sonnet-4-6
+      max_tokens: 4096
+      temperature: 0.7
+
+    - id: claude-opus
+      provider: anthropic
+      name: claude-opus-4-8
+      max_tokens: 8192
+      temperature: 0.5
+
+    - id: claude-haiku
+      provider: anthropic
+      name: claude-haiku-4-5
+      max_tokens: 2048
+      temperature: 0.9
+
+    # --- OpenAI ---
+    - id: gpt-4o
+      provider: openai
+      name: gpt-4o
+      max_tokens: 4096
+      temperature: 0.7
+
+    - id: gpt-4o-mini
+      provider: openai
+      name: gpt-4o-mini
+      max_tokens: 2048
+      temperature: 0.9
+
+    # --- Local / Self-hosted ---
+    - id: local-llama
+      provider: local
+      name: llama3.2
+      max_tokens: 2048
+      temperature: 0.7
+
+# ----------------------------------------------------------
+# Databases — persistence / storage registry
+# ----------------------------------------------------------
+databases:
+
+  # The default database to use (must match an id in the registry)
+  default: sqlite-dev
+
+  # Database registry — define as many databases as you need
+  registry:
+    # --- SQLite (local dev) ---
+    - id: sqlite-dev
+      driver: sqlite
+      url: sqlite:///data/dev.db
+      pool:
+        min_size: 1
+        max_size: 5
+        timeout_seconds: 30
+      auto_migrate: true
+
+    # --- SQLite (testing) ---
+    - id: sqlite-test
+      driver: sqlite
+      url: sqlite:///data/test.db
+      pool:
+        min_size: 1
+        max_size: 3
+        timeout_seconds: 15
+      auto_migrate: true
+
+    # --- PostgreSQL (staging) ---
+    - id: postgres-staging
+      driver: postgresql
+      url: postgresql://user:pass@localhost:5432/skills_staging
+      pool:
+        min_size: 2
+        max_size: 10
+        timeout_seconds: 30
+      ssl_mode: require
+      auto_migrate: true
+
+    # --- PostgreSQL (production) ---
+    - id: postgres-prod
+      driver: postgresql
+      url_env: DATABASE_URL
+      pool:
+        min_size: 5
+        max_size: 50
+        timeout_seconds: 60
+      ssl_mode: require
+      auto_migrate: false
+
+    # --- MySQL ---
+    - id: mysql-dev
+      driver: mysql
+      url: mysql+pymysql://root@localhost:3306/skills_dev
+      pool:
+        min_size: 2
+        max_size: 10
+        timeout_seconds: 30
+      auto_migrate: true
+
+    # --- MongoDB ---
+    - id: mongo-dev
+      driver: mongodb
+      url: mongodb://localhost:27017/skills_dev
+      pool:
+        min_size: 2
+        max_size: 20
+        timeout_seconds: 30
+
+# ----------------------------------------------------------
+# Logging
+# ----------------------------------------------------------
+logging:
+  level: info          # debug | info | warning | error
+  format: json         # json | text
+  output: stderr       # stderr | stdout | file path
+
+# ----------------------------------------------------------
+# Runtime
+# ----------------------------------------------------------
+runtime:
+  # Concurrency
+  workers: 4
+
+  # Timeouts (seconds)
+  request_timeout: 60
+  shutdown_timeout: 30
