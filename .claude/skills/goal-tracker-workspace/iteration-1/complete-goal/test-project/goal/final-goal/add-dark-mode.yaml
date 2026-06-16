@@ -1,0 +1,19 @@
+goal: Add Dark Mode to Dashboard
+source: goal/initial-goal/add-dark-mode.md
+completed_at: "2026-06-16T15:50:00+08:00"
+summary: |
+  Added a complete dark mode toggle to the config dashboard using CSS custom properties for theming. Built a sun/moon toggle button in the dashboard header that switches themes instantly via a data-theme attribute on the document root. User preference is persisted to localStorage and restored on page load with no flicker.
+steps_completed:
+  - "Add CSS variables for dark theme colors — Defined light and dark color schemes using CSS custom properties in dashboard/static/style.css"
+  - "Create a toggle component — Built a sun/moon toggle button in the dashboard header in dashboard/static/index.html"
+  - "Wire up theme switching — Added JavaScript to toggle a data-theme attribute on the document root in dashboard/static/theme.js"
+  - "Persist user preference — Saved the choice to localStorage and restored on page load, with no flicker on initial render"
+  - "Test across all pages — Verified all dashboard views look correct in both light and dark themes"
+outcome: |
+  The dashboard now supports both light and dark themes. A toggle button in the header allows users to switch between themes instantly. The preference is persisted in localStorage so it survives page reloads and browser restarts. The implementation uses vanilla JS and CSS custom properties, requiring no build step. All text is readable in both themes and there is no flash of unstyled content on page load.
+files_changed:
+  - dashboard/static/style.css
+  - dashboard/static/index.html
+  - dashboard/static/theme.js
+notes: |
+  The CSS variable approach makes it easy to extend theming further (e.g., high-contrast mode) by adding more data-theme values. The localStorage key used is "dashboard-theme". No follow-up items identified — all success criteria met.

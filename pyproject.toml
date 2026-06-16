@@ -1,0 +1,20 @@
+[project]
+name = "coding-skills"
+version = "0.1.0"
+description = "Config dashboard for managing model and database registries"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pyyaml",
+    "pydantic",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "httpx",
+]
+
+[project.scripts]
+config-dashboard = "dashboard.main:serve"

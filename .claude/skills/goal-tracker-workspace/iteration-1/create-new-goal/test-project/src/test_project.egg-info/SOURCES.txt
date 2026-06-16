@@ -1,0 +1,8 @@
+pyproject.toml
+src/calculator.py
+src/test_project.egg-info/PKG-INFO
+src/test_project.egg-info/SOURCES.txt
+src/test_project.egg-info/dependency_links.txt
+src/test_project.egg-info/requires.txt
+src/test_project.egg-info/top_level.txt
+tests/test_calculator.py

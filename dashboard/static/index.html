@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Config Dashboard — default.yaml</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: { 50: '#eff6ff', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
+        }
+      }
+    }
+  }
+</script>
+<style>
+  .tab-active { border-bottom: 2px solid #3b82f6; color: #3b82f6; }
+  .toast-in { animation: slideIn 0.3s ease-out; }
+  @keyframes slideIn { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+</style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+<!-- ====== TOP BAR ====== -->
+<header class="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
+  <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <svg class="w-6 h-6 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+      </svg>
+      <h1 class="text-lg font-semibold text-gray-800">Config Dashboard</h1>
+      <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded font-mono">default.yaml</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="undoChanges()"
+        class="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
+        ↺ Undo
+      </button>
+      <button onclick="saveConfig()"
+        class="px-4 py-1.5 text-sm text-white bg-brand-600 hover:bg-brand-700 rounded-md font-medium transition-colors flex items-center gap-1.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+        </svg>
+        Save
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 py-6">
+
+  <!-- ====== TOAST CONTAINER ====== -->
+  <div id="toast" class="hidden fixed top-16 right-4 z-50 toast-in"></div>
+
+  <!-- ====== STATS CARDS ====== -->
+  <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+    <div class="bg-white rounded-lg border border-gray-200 p-4">
+      <p class="text-xs text-gray-500 uppercase tracking-wide">Models</p>
+      <p id="stat-models" class="text-2xl font-bold text-gray-800 mt-1">—</p>
+    </div>
+    <div class="bg-white rounded-lg border border-gray-200 p-4">
+      <p class="text-xs text-gray-500 uppercase tracking-wide">Databases</p>
+      <p id="stat-databases" class="text-2xl font-bold text-gray-800 mt-1">—</p>
+    </div>
+    <div class="bg-white rounded-lg border border-purple-200 bg-purple-50/30 p-4">
+      <p class="text-xs text-purple-500 uppercase tracking-wide font-semibold">High Model</p>
+      <p id="stat-default-high" class="text-sm font-semibold text-purple-700 mt-1 truncate">—</p>
+    </div>
+    <div class="bg-white rounded-lg border border-blue-200 bg-blue-50/30 p-4">
+      <p class="text-xs text-blue-500 uppercase tracking-wide font-semibold">Middle Model</p>
+      <p id="stat-default-middle" class="text-sm font-semibold text-blue-700 mt-1 truncate">—</p>
+    </div>
+    <div class="bg-white rounded-lg border border-gray-200 p-4">
+      <p class="text-xs text-gray-500 uppercase tracking-wide">Default Database</p>
+      <p id="stat-default-db" class="text-sm font-semibold text-brand-600 mt-1 truncate">—</p>
+    </div>
+  </div>
+
+  <!-- ====== TAB BAR ====== -->
+  <div class="flex gap-0 border-b border-gray-200 mb-6">
+    <button id="tab-models" onclick="switchTab('models')"
+      class="px-4 py-2 text-sm font-medium tab-active transition-colors">
+      Models
+    </button>
+    <button id="tab-databases" onclick="switchTab('databases')"
+      class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">
+      Databases
+    </button>
+  </div>
+
+  <!-- ====== MODELS TAB ====== -->
+  <div id="panel-models">
+    <!-- Tier default selectors -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+      <div class="flex items-center gap-3 bg-purple-50 rounded-lg border border-purple-200 px-4 py-2.5">
+        <span class="text-sm font-semibold text-purple-700 whitespace-nowrap">High:</span>
+        <select id="default-high-select" onchange="markDirty()"
+          class="flex-1 text-sm border border-purple-300 rounded-md px-3 py-1.5 bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none">
+        </select>
+      </div>
+      <div class="flex items-center gap-3 bg-blue-50 rounded-lg border border-blue-200 px-4 py-2.5">
+        <span class="text-sm font-semibold text-blue-700 whitespace-nowrap">Middle:</span>
+        <select id="default-middle-select" onchange="markDirty()"
+          class="flex-1 text-sm border border-blue-300 rounded-md px-3 py-1.5 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+        </select>
+      </div>
+      <div class="flex items-center gap-3 bg-gray-100 rounded-lg border border-gray-300 px-4 py-2.5">
+        <span class="text-sm font-semibold text-gray-700 whitespace-nowrap">Low:</span>
+        <select id="default-low-select" onchange="markDirty()"
+          class="flex-1 text-sm border border-gray-300 rounded-md px-3 py-1.5 bg-white focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none">
+        </select>
+      </div>
+    </div>
+
+    <!-- Model cards -->
+    <div id="models-container" class="space-y-3"></div>
+
+    <!-- Add button -->
+    <button onclick="addModel()"
+      class="mt-3 w-full border-2 border-dashed border-gray-300 text-gray-400 hover:text-brand-600 hover:border-brand-400 rounded-lg py-3 text-sm font-medium transition-colors">
+      + Add Model
+    </button>
+  </div>
+
+  <!-- ====== DATABASES TAB ====== -->
+  <div id="panel-databases" class="hidden">
+    <!-- Default selector -->
+    <div class="flex items-center gap-3 mb-4">
+      <label class="text-sm text-gray-600 font-medium">Default database:</label>
+      <select id="default-db-select" onchange="markDirty()"
+        class="text-sm border border-gray-300 rounded-md px-3 py-1.5 bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+      </select>
+    </div>
+
+    <!-- Database cards -->
+    <div id="databases-container" class="space-y-3"></div>
+
+    <!-- Add button -->
+    <button onclick="addDatabase()"
+      class="mt-3 w-full border-2 border-dashed border-gray-300 text-gray-400 hover:text-brand-600 hover:border-brand-400 rounded-lg py-3 text-sm font-medium transition-colors">
+      + Add Database
+    </button>
+  </div>
+
+</main>
+
+<!-- ====== SCRIPTS ====== -->
+<script>
+// ============================================================
+// State
+// ============================================================
+let config = null;
+let originalConfig = null;  // for undo
+let currentTab = 'models';
+let isDirty = false;
+
+// Provider/driver color maps
+const providerColors = {
+  anthropic: 'bg-purple-100 text-purple-700',
+  volcengine: 'bg-cyan-100 text-cyan-700',
+  openai: 'bg-green-100 text-green-700',
+  local: 'bg-gray-100 text-gray-600',
+};
+const driverColors = {
+  sqlite: 'bg-amber-100 text-amber-700',
+  postgresql: 'bg-blue-100 text-blue-700',
+  mysql: 'bg-orange-100 text-orange-700',
+  mongodb: 'bg-emerald-100 text-emerald-700',
+};
+
+// ============================================================
+// Init
+// ============================================================
+async function loadConfig() {
+  try {
+    const res = await fetch('/api/config');
+    if (!res.ok) throw new Error(await res.text());
+    config = await res.json();
+    originalConfig = JSON.parse(JSON.stringify(config));  // deep clone
+    isDirty = false;
+    renderAll();
+  } catch (e) {
+    showToast('error', 'Failed to load config: ' + e.message);
+  }
+}
+
+async function saveConfig() {
+  // Serialize current DOM state into config object
+  collectFormState();
+
+  try {
+    const res = await fetch('/api/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(config),
+    });
+    if (!res.ok) throw new Error(await res.text());
+    originalConfig = JSON.parse(JSON.stringify(config));
+    isDirty = false;
+    showToast('success', 'Config saved to default.yaml');
+  } catch (e) {
+    showToast('error', 'Failed to save: ' + e.message);
+  }
+}
+
+function undoChanges() {
+  config = JSON.parse(JSON.stringify(originalConfig));
+  isDirty = false;
+  renderAll();
+  showToast('info', 'Reverted to last saved state');
+}
+
+function markDirty() {
+  isDirty = true;
+}
+
+// ============================================================
+// Render
+// ============================================================
+function renderAll() {
+  updateStats();
+  renderModels();
+  renderDatabases();
+}
+
+function updateStats() {
+  const models = config?.models?.registry || [];
+  const dbs = config?.databases?.registry || [];
+  document.getElementById('stat-models').textContent = models.length;
+  document.getElementById('stat-databases').textContent = dbs.length;
+  document.getElementById('stat-default-high').textContent = config?.models?.default_model_high || '—';
+  document.getElementById('stat-default-middle').textContent = config?.models?.default_model_middle || '—';
+  document.getElementById('stat-default-db').textContent = config?.databases?.default || '—';
+}
+
+// ---- Models ----
+function renderModels() {
+  const models = config?.models?.registry || [];
+  const providers = Object.keys(config?.models?.providers || {});
+  const container = document.getElementById('models-container');
+
+  // Populate tier selectors
+  const modelOptions = models.map(m =>
+    `<option value="${esc(m.id)}">${esc(m.id)}</option>`
+  ).join('');
+
+  document.getElementById('default-high-select').innerHTML = modelOptions;
+  document.getElementById('default-high-select').value = config.models.default_model_high || '';
+
+  document.getElementById('default-middle-select').innerHTML = modelOptions;
+  document.getElementById('default-middle-select').value = config.models.default_model_middle || '';
+
+  document.getElementById('default-low-select').innerHTML = modelOptions;
+  document.getElementById('default-low-select').value = config.models.default_model_low || '';
+
+  // Cards
+  container.innerHTML = models.map((m, i) => modelCard(m, i, providers)).join('');
+}
+
+function modelCard(m, idx, providers) {
+  const providerColor = providerColors[m.provider] || 'bg-gray-100 text-gray-600';
+
+  // Determine which tiers this model is the default for
+  const tiers = [];
+  if (config.models.default_model_high === m.id) tiers.push('<span class="text-xs text-purple-600 font-semibold">high</span>');
+  if (config.models.default_model_middle === m.id) tiers.push('<span class="text-xs text-blue-600 font-semibold">middle</span>');
+  if (config.models.default_model_low === m.id) tiers.push('<span class="text-xs text-gray-600 font-semibold">low</span>');
+  const tierBadges = tiers.length ? tiers.join(' ') : '';
+
+  return `
+    <div class="bg-white rounded-lg border border-gray-200 p-4 hover:border-gray-300 transition-colors">
+      <div class="flex items-start justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-mono font-semibold text-gray-800">${esc(m.id)}</span>
+          <span class="text-xs px-2 py-0.5 rounded-full font-medium ${providerColor}">${esc(m.provider)}</span>
+          ${tierBadges ? '<span class="text-xs text-amber-500">★ ' + tierBadges + '</span>' : ''}
+        </div>
+        <button onclick="deleteModel(${idx})"
+          class="text-gray-300 hover:text-red-500 transition-colors p-0.5" title="Delete">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">ID</label>
+          <input type="text" value="${esc(m.id)}" data-model="${idx}" data-field="id"
+            onchange="onFieldChange('models', ${idx}, 'id', this.value)"
+            class="w-full text-sm border border-gray-200 rounded px-2 py-1.5 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none bg-gray-50">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Provider</label>
+          <select data-model="${idx}" data-field="provider" onchange="onFieldChange('models', ${idx}, 'provider', this.value)"
+            class="w-full text-sm border border-gray-200 rounded px-2 py-1.5 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none bg-gray-50">
+            ${providers.map(p => `<option value="${esc(p)}" ${m.provider === p ? 'selected' : ''}>${esc(p)}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Model Name</label>
+          <input type="text" value="${esc(m.name)}" data-model="${idx}" data-field="name"
+            onchange="onFieldChange('models', ${idx}, 'name', this.value)"
+            class="w-full text-sm border border-gray-200 rounded px-2 py-1.5 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none bg-gray-50">
+        </div>
+        <div class="flex gap-2">
+          <div class="flex-1">
+            <label class="block text-xs text-gray-400 mb-1">max_tokens</label>
+            <input type="number" value="${m.max_tokens || ''}" data-model="${idx}" data-field="max_tokens"
+              onchange="onFieldChange('models', ${idx}, 'max_tokens', parseInt(this.value) || 4096)"
+              class="w-full text-sm border border-gray-200 rounded px-2 py-1.5 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none bg-gray-50">
+          </div>
+          <div class="flex-1">
+            <label class="block text-xs text-gray-400 mb-1">temperature</label>
+            <input type="number" step="0.1" value="${m.temperature ?? ''}" data-model="${idx}" data-field="temperature"
+              onchange="onFieldChange('models', ${idx}, 'temperature', parseFloat(this.value) || 0.7)"
+              class="w-full text-sm border border-gray-200 rounded px-2 py-1.5 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none bg-gray-50">
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function addModel() {
+  const providers = Object.keys(config?.models?.providers || {});
+  const newModel = {
+    id: 'new-model-' + Date.now(),
+    provider: providers[0] || 'anthropic',
+    name: '',
+    max_tokens: 4096,
+    temperature: 0.7,
+  };
+  config.models.registry.push(newModel);
+  markDirty();
+  renderModels();
+}
+
+function deleteModel(idx) {
+  const m = config.models.registry[idx];
+  if (!confirm(`Delete model "${m.id}"?`)) return;
+  // If deleting a model that is a tier default, clear that default
+  if (config.models.default_model_high === m.id) config.models.default_model_high = '';
+  if (config.models.default_model_middle === m.id) config.models.default_model_middle = '';
+  if (config.models.default_model_low === m.id) config.models.default_model_low = '';
+  if (config.models.default === m.id) {
+    config.models.default = config.models.registry.length > 1
+      ? config.models.registry.find(x => x.id !== m.id)?.id || ''
+      : '';
+  }
+  config.models.registry.splice(idx, 1);
+  markDirty();
+  renderModels();
+}
+
+// ---- Databases ----
+function renderDatabases() {
+  const dbs = config?.databases?.registry || [];
+  const select = document.getElementById('default-db-select');
+  const container = document.getElementById('databases-container');
+
+  // Default selector
+  select.innerHTML = dbs.map(d =>
+    `<option value="${esc(d.id)}" ${config.databases.default === d.id ? 'selected' : ''}>${esc(d.id)}</option>`
+  ).join('');
+
+  // Cards
+  container.innerHTML = dbs.map((d, i) => databaseCard(d, i)).join('');
+}
+
+function databaseCard(d, idx) {
+  const driverColor = driverColors[d.driver] || 'bg-gray-100 text-gray-600';
+  const pool = d.pool || {};
+  return `
+    <div class="bg-white rounded-lg border border-gray-200 p-4 hover:border-gray-300 transition-colors">
+      <div class="flex items-start justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-mono font-semibold text-gray-800">${esc(d.id)}</span>
+          <span class="text-xs px-2 py-0.5 rounded-full font-medium ${driverColor}">${esc(d.driver)}</span>
+          ${config.databases.default === d.id ? '<span class="text-xs text-amber-500">★ default</span>' : ''}
+        </div>
+        <button onclick="deleteDatabase(${idx})"
+          class="text-gray-300 hover:text-red-500 transition-colors p-0.5" title="Delete">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="grid grid-cols-2 lg:grid-cols-3 gap-3">
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">ID</label>
+          <input type="text" value="${esc(d.id)}" onchange="onFieldChange('databases', ${idx}, 'id', this.value)"
+            class="w-full text-sm border border-gray-200 rounded px-2 py-1.5 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none bg-gray-50">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Driver</label>
+          <select onchange="onFieldChange('databases', ${idx}, 'driver', this.value)"
+            class="w-full text-sm border border-gray-200 rounded px-2 py-1.5 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none bg-gray-50">
+            ${['sqlite','postgresql','mysql','mongodb'].map(v =>
+              `<option value="${v}" ${d.driver === v ? 'selected' : ''}>${v}</option>`
+            ).join('')}
+          </select>
+        </div>
+        <div class="col-span-2 lg:col-span-1">
+          <label class="block text-xs text-gray-400 mb-1">URL</label>
+          <input type="text" value="${esc(d.url || '')}" onchange="onFieldChange('databases', ${idx}, 'url', this.value)"
+            class="w-full text-sm border border-gray-200 rounded px-2 py-1.5 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none bg-gray-50">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Pool min_size</label>
+          <input type="number" value="${pool.min_size || 1}" onchange="onPoolChange(${idx}, 'min_size', this.value)"
+            class="w-full text-sm border border-gray-200 rounded px-2 py-1.5 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none bg-gray-50">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Pool max_size</label>
+          <input type="number" value="${pool.max_size || 10}" onchange="onPoolChange(${idx}, 'max_size', this.value)"
+            class="w-full text-sm border border-gray-200 rounded px-2 py-1.5 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none bg-gray-50">
+        </div>
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">Pool timeout (s)</label>
+          <input type="number" value="${pool.timeout_seconds || 30}" onchange="onPoolChange(${idx}, 'timeout_seconds', this.value)"
+            class="w-full text-sm border border-gray-200 rounded px-2 py-1.5 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none bg-gray-50">
+        </div>
+      </div>
+      <div class="flex items-center gap-3 mt-3">
+        ${d.ssl_mode !== undefined ? `
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">SSL Mode</label>
+          <input type="text" value="${esc(d.ssl_mode || '')}" onchange="onFieldChange('databases', ${idx}, 'ssl_mode', this.value)"
+            class="w-full text-sm border border-gray-200 rounded px-2 py-1.5 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none bg-gray-50">
+        </div>` : ''}
+        <label class="flex items-center gap-1.5 text-sm text-gray-600">
+          <input type="checkbox" ${d.auto_migrate !== false ? 'checked' : ''}
+            onchange="onFieldChange('databases', ${idx}, 'auto_migrate', this.checked)"
+            class="rounded border-gray-300 text-brand-600 focus:ring-brand-500">
+          auto_migrate
+        </label>
+        ${d.url_env !== undefined ? `
+        <div>
+          <label class="block text-xs text-gray-400 mb-1">URL Env</label>
+          <input type="text" value="${esc(d.url_env || '')}" onchange="onFieldChange('databases', ${idx}, 'url_env', this.value)"
+            class="w-full text-sm border border-gray-200 rounded px-2 py-1.5 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none bg-gray-50">
+        </div>` : ''}
+      </div>
+    </div>`;
+}
+
+function addDatabase() {
+  const newDb = {
+    id: 'new-db-' + Date.now(),
+    driver: 'sqlite',
+    url: 'sqlite:///data/new.db',
+    pool: { min_size: 1, max_size: 5, timeout_seconds: 30 },
+    auto_migrate: true,
+  };
+  config.databases.registry.push(newDb);
+  markDirty();
+  renderDatabases();
+}
+
+function deleteDatabase(idx) {
+  const d = config.databases.registry[idx];
+  if (!confirm(`Delete database "${d.id}"?`)) return;
+  if (config.databases.default === d.id) {
+    config.databases.default = config.databases.registry.length > 1
+      ? config.databases.registry.find(x => x.id !== d.id)?.id || ''
+      : '';
+  }
+  config.databases.registry.splice(idx, 1);
+  markDirty();
+  renderDatabases();
+}
+
+// ============================================================
+// Field change handlers (updates in-memory config from DOM)
+// ============================================================
+function onFieldChange(section, idx, field, value) {
+  const registry = config[section].registry;
+  if (idx >= 0 && idx < registry.length) {
+    registry[idx][field] = value;
+    markDirty();
+    // If id changed and it was a tier default, update the tier default pointer
+    if (field === 'id') {
+      if (config.models.default_model_high === registry[idx].id) {
+        // handled by reference — id is mutated in place
+      }
+      renderAll(); // re-render to update selectors and old id references
+    } else {
+      updateStats();
+    }
+  }
+}
+
+function onPoolChange(idx, field, value) {
+  const dbs = config.databases.registry;
+  if (idx >= 0 && idx < dbs.length) {
+    if (!dbs[idx].pool) dbs[idx].pool = {};
+    dbs[idx].pool[field] = parseInt(value) || 0;
+    markDirty();
+  }
+}
+
+// ============================================================
+// Collect all form state before save
+// ============================================================
+function collectFormState() {
+  // Update tier default selections
+  config.models.default_model_high = document.getElementById('default-high-select').value;
+  config.models.default_model_middle = document.getElementById('default-middle-select').value;
+  config.models.default_model_low = document.getElementById('default-low-select').value;
+  config.models.default = config.models.default_model_middle;  // keep backwards compat
+  config.databases.default = document.getElementById('default-db-select').value;
+
+  // All field changes are already live-tracked via onchange handlers,
+  // but double-check by scanning DOM inputs for any we might have missed
+  document.querySelectorAll('#models-container input, #models-container select').forEach(el => {
+    const idx = parseInt(el.dataset.model);
+    const field = el.dataset.field;
+    if (idx >= 0 && field) {
+      let value = el.value;
+      if (el.type === 'number') value = field === 'temperature' ? parseFloat(value) : parseInt(value);
+      if (el.type === 'checkbox') value = el.checked;
+      config.models.registry[idx][field] = value;
+    }
+  });
+
+  document.querySelectorAll('#databases-container input, #databases-container select').forEach(el => {
+    // Pool fields handled separately via onPoolChange
+    if (el.closest('[data-pool]')) return;
+  });
+}
+
+// ============================================================
+// Tab switching
+// ============================================================
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-models').classList.toggle('tab-active', tab === 'models');
+  document.getElementById('tab-models').classList.toggle('text-gray-500', tab !== 'models');
+  document.getElementById('tab-databases').classList.toggle('tab-active', tab === 'databases');
+  document.getElementById('tab-databases').classList.toggle('text-gray-500', tab !== 'databases');
+  document.getElementById('panel-models').classList.toggle('hidden', tab !== 'models');
+  document.getElementById('panel-databases').classList.toggle('hidden', tab !== 'databases');
+}
+
+// ============================================================
+// Toast notifications
+// ============================================================
+function showToast(type, message) {
+  const el = document.getElementById('toast');
+  const colors = {
+    success: 'bg-green-50 border-green-300 text-green-800',
+    error: 'bg-red-50 border-red-300 text-red-800',
+    info: 'bg-blue-50 border-blue-300 text-blue-800',
+  };
+  el.className = `fixed top-16 right-4 z-50 toast-in border px-4 py-3 rounded-lg text-sm font-medium shadow-lg ${colors[type] || colors.info}`;
+  el.textContent = message;
+  el.classList.remove('hidden');
+  setTimeout(() => el.classList.add('hidden'), 3000);
+}
+
+// ============================================================
+// Utility
+// ============================================================
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ============================================================
+// Keyboard shortcut: Ctrl+S to save
+// ============================================================
+document.addEventListener('keydown', (e) => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    saveConfig();
+  }
+});
+
+// ============================================================
+// Boot
+// ============================================================
+loadConfig();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "eval_id": 1,
+  "eval_name": "create-new-goal",
+  "prompt": "You are working in the test-project directory. The goal/initial-goal/ directory exists but is empty. I want to track a new goal: \"Set up CI/CD pipeline for the project.\" The steps are: 1) Choose a CI platform (GitHub Actions), 2) Write a workflow config that runs tests on push, 3) Add linting step, 4) Add deployment step to staging, 5) Test the pipeline end-to-end. Success criteria: all tests pass on every push, linting catches style issues, staging deploy is automatic. Constraints: must use free tier services, should complete in under 5 minutes. Please create the goal file and help me start working on it.",
+  "assertions": []
+}
