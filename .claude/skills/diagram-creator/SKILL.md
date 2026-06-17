@@ -23,6 +23,7 @@ implementation has a clear blueprint.
 
 - **Template**: `template/diagram/template.diagram.yaml` — the canonical schema with placeholder data
 - **Input**: `goal/clear-goal/` — refined goals with design decisions (the primary input for forward-design)
+- **Context**: `goal/initial-goal/` — original goals with full requirements (may contain details lost in refinement)
 - **Output**: `diagram/` — generated diagrams go here
 - **Existing diagrams**: `diagram/` — check for prior work before creating a new one
 - **Directory structure**: Mirror the source's directory structure. `goal/clear-goal/PAAS/mcp.md` → `diagram/paas/mcp-diagram.yaml`. Keep the same relative path (case-insensitive) so diagrams are easy to find from their source.
@@ -31,8 +32,9 @@ implementation has a clear blueprint.
 
 1. Read `template/diagram/template.diagram.yaml` to understand the exact YAML schema
 2. **Read the corresponding clear-goal file** — The clear-goal contains refined steps, design decisions, and constraints that shape the class design. Mirror the path: `goal/clear-goal/<path>/<name>.md` → `diagram/<path>/<name>-diagram.yaml`. If the user explicitly passes a different source file, use that instead.
-3. Check `diagram/` for any existing diagrams that relate to the current task
-4. If the user mentions a specific codebase or feature, read the relevant source files to understand the domain
+3. **Read the original initial-goal file** — The clear-goal is a summary of changes. The initial-goal has the full requirements, steps, and success criteria. Derive the path from the clear-goal's `source` field, or mirror from the clear-goal path: `goal/clear-goal/<path>/<name>.md` → `goal/initial-goal/<path>/<name>.md`.
+4. Check `diagram/` for any existing diagrams that relate to the current task
+5. If the user mentions a specific codebase or feature, read the relevant source files to understand the domain
 
 ## YAML schema
 
