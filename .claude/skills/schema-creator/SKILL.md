@@ -206,3 +206,11 @@ Once confirmed, write the Python file to `schema/<mirror-path>.py`.
    name
 4. **Python syntax**: The file parses without errors
    (`python -c "import ast; ast.parse(open('...').read())"`)
+
+### Phase 5: Offer to continue the pipeline
+
+After saving the schema, **ask the user**: "Schema saved. Want to generate the service implementation code now? I can run `/code-creator` with this diagram and schema."
+
+If the user says yes, invoke the Skill tool with `skill: "code-creator"` and pass the diagram file path as args. This chains the pipeline: schema → code.
+
+If the user says no or "later", that's fine — they can always run code-creator separately.

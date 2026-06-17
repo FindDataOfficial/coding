@@ -131,6 +131,14 @@ Before considering the diagram complete, validate it:
 
 If validation fails, fix the issues and re-validate. Do not save a diagram that fails validation.
 
+### Phase 5: Offer to continue the pipeline
+
+After saving the diagram, **ask the user**: "Diagram saved. Want to generate the SQLAlchemy schema from it? I can run `/schema-creator` with this diagram."
+
+If the user says yes, invoke the Skill tool with `skill: "schema-creator"` and pass the diagram file path as args. This chains the pipeline: diagram → schema → code.
+
+If the user says no or "later", that's fine — they can always run schema-creator separately.
+
 ## Example
 
 Given this Python code:
