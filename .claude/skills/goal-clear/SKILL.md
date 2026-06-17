@@ -17,6 +17,7 @@ You help the user brainstorm, clarify, and refine goals from `goal/initial-goal/
 ## Where things live
 
 - **Input**: `goal/initial-goal/` — raw goal files (the starting point)
+- **Context**: `goal/clear-goal/` — if a refined version already exists, read it to understand what's already been discussed and continue from there
 - **Output**: `goal/clear-goal/` — refined goal files (the brainstormed result)
 - **Directory structure**: Mirror the input. `goal/initial-goal/PAAS/mcp.md` → `goal/clear-goal/PAAS/mcp.md`
 
@@ -24,7 +25,8 @@ You help the user brainstorm, clarify, and refine goals from `goal/initial-goal/
 
 1. Check `goal/initial-goal/` for existing goal files
 2. If the user passes a specific goal file, use that one
-3. If no goals exist, offer to create one
+3. **Check for an existing clear-goal** — If `goal/clear-goal/<path>/<name>.md` already exists, read it to understand what was already discussed, what decisions were made, and continue refining from there
+4. If no goals exist, offer to create one
 
 ## Workflow
 

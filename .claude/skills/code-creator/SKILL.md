@@ -35,7 +35,7 @@ Skip classes whose attributes are all scalars and whose methods are `toDict` /
 
 1. Read the diagram YAML file to understand all classes and relationships
 2. Read the corresponding schema file (mirror path: `diagram/<path>/<name>-diagram.yaml` → `schema/<path>/<name>.py`) to understand the data layer
-3. Read the corresponding clear-goal file (mirror path: `diagram/<path>/<name>-diagram.yaml` → `goal/clear-goal/<path>/<name>.md`) for business constraints and design decisions
+3. **Read the corresponding clear-goal file** (mirror path, case-insensitive: `diagram/<path>/<name>-diagram.yaml` → `goal/clear-goal/<path>/<name>.md`) for business constraints and design decisions that affect implementation
 4. Identify which classes are service classes (skip data entities — they're in `schema/`)
 5. Check `src/` for any existing implementation files
 
