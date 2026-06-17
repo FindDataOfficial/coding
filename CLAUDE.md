@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A YAML-driven config harness with a web dashboard for editing. `default.yaml` is the single source of truth — it defines AI model registries (providers, tokens, temperature) and database registries (drivers, pools, SSL). The dashboard provides a GUI to CRUD these entries and persists changes back to the YAML file.
+A YAML-driven config harness with a web dashboard for editing. `default.yaml` is the single source of truth for model/database registries. `dashboard.yaml` controls which directories the dashboard scans for YAML files — the dashboard auto-discovers files and generates routes and UI for each one.
+
+The dashboard provides a sidebar to switch between discovered files. `default.yaml` gets a schema-aware rich editor (Models/Databases tabs), while all other files get a generic YAML text editor with `js-yaml`.
 
 The `goal/` directory contains design docs for future work (scraping workflow, MCP server creation).
 
@@ -34,28 +36,34 @@ python scripts/get_defaults.py --file custom.yaml
 ## Architecture
 
 ```
-default.yaml          ← Single source of truth (model + DB registries)
+default.yaml          ← Primary config (model + DB registries)
+dashboard.yaml        ← Controls which dirs to scan for YAML files
 dashboard/
   config.py           ← YAML load/save (yaml.safe_load / yaml.dump)
-  main.py             ← FastAPI app: GET/POST /api/config + serves static/
-  static/index.html   ← SPA dashboard (vanilla JS + Tailwind CDN), no build step
+  discovery.py        ← File scanner: reads dashboard.yaml, discovers .yaml/.yml files
+  main.py             ← FastAPI app: /api/files, /api/files/{name}, /api/config + serves static/
+  static/index.html   ← SPA dashboard (vanilla JS + Tailwind CDN + js-yaml CDN), no build step
 scripts/
   get_defaults.py     ← CLI: resolves `default` key against `registry` for each section
 save/
   template.agents.yaml    ← Agent registry template (8 agent types with tools/rules)
   template.workflows.yaml ← Workflow registry template (8 workflow pipelines with phases)
-tests/
-  conftest.py         ← temp YAML fixture + FastAPI TestClient with monkeypatched CONFIG_PATH
+test/
+  conftest.py         ← temp YAML fixture + multi_file_env fixture + TestClient
   test_config.py      ← Unit tests for load/save/round-trip
-  test_api.py         ← Integration tests for GET/POST /api/config + static serving
+  test_api.py         ← Integration tests for all API routes + backward compat
+  test_discovery.py   ← Unit tests for file discovery and dashboard config loading
 ```
 
 ## Key Design Decisions
 
-- **No database**: the config file IS the data store. The dashboard reads `default.yaml` on every GET and overwrites it on POST.
-- **No build step**: the dashboard SPA loads Tailwind from CDN and uses vanilla JS — no bundler, no npm.
-- **Tests use temp files**: `conftest.py` creates a temporary YAML with sample data and monkeypatches `dashboard.main.CONFIG_PATH` so tests never touch the real `default.yaml`.
+- **No database**: the config file IS the data store. The dashboard reads YAML files on every GET and overwrites them on POST.
+- **No build step**: the dashboard SPA loads Tailwind and js-yaml from CDN and uses vanilla JS — no bundler, no npm.
+- **Tests use temp files**: `conftest.py` creates temporary YAML files with sample data and monkeypatches paths so tests never touch real config files.
 - **Config structure**: `default.yaml` sections (models, databases, logging, runtime) each have a `default` key pointing to an `id` in their `registry` array. `get_defaults.py` resolves these references.
+- **File discovery**: `dashboard.yaml` defines directories to scan. The backend discovers all `.yaml`/`.yml` files at startup and exposes them via `/api/files`. The frontend renders a sidebar with file switching.
+- **Dual editor**: `default.yaml` (or whatever `rich_editor` names) gets the schema-aware Models/Databases editor. All other files get a generic YAML textarea backed by `js-yaml`.
+- **Backward compat**: `GET/POST /api/config` still work, resolving to the `rich_editor` file or `CONFIG_PATH`.
 
 ## YAML Config Schema
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Config Dashboard — default.yaml</title>
+<title>Config Dashboard</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {
@@ -16,17 +16,19 @@
     }
   }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
 <style>
   .tab-active { border-bottom: 2px solid #3b82f6; color: #3b82f6; }
   .toast-in { animation: slideIn 0.3s ease-out; }
   @keyframes slideIn { from { transform: translateY(-100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .sidebar-item-active { background-color: #eff6ff; border-left: 3px solid #3b82f6; }
 </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
 
 <!-- ====== TOP BAR ====== -->
 <header class="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm">
-  <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
+  <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
     <div class="flex items-center gap-3">
       <svg class="w-6 h-6 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -34,14 +36,15 @@
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
       </svg>
       <h1 class="text-lg font-semibold text-gray-800">Config Dashboard</h1>
-      <span class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded font-mono">default.yaml</span>
+      <span id="header-badge" class="text-xs text-gray-400 bg-gray-100 px-2 py-0.5 rounded font-mono">—</span>
     </div>
     <div class="flex items-center gap-2">
-      <button onclick="undoChanges()"
+      <span id="dirty-indicator" class="hidden text-xs text-amber-500 font-medium mr-2">● unsaved</span>
+      <button onclick="undoCurrentFile()"
         class="px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 rounded-md transition-colors">
         ↺ Undo
       </button>
-      <button onclick="saveConfig()"
+      <button onclick="saveCurrentFile()"
         class="px-4 py-1.5 text-sm text-white bg-brand-600 hover:bg-brand-700 rounded-md font-medium transition-colors flex items-center gap-1.5">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
@@ -52,110 +55,158 @@
   </div>
 </header>
 
-<main class="max-w-6xl mx-auto px-4 py-6">
-
-  <!-- ====== TOAST CONTAINER ====== -->
-  <div id="toast" class="hidden fixed top-16 right-4 z-50 toast-in"></div>
-
-  <!-- ====== STATS CARDS ====== -->
-  <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
-    <div class="bg-white rounded-lg border border-gray-200 p-4">
-      <p class="text-xs text-gray-500 uppercase tracking-wide">Models</p>
-      <p id="stat-models" class="text-2xl font-bold text-gray-800 mt-1">—</p>
-    </div>
-    <div class="bg-white rounded-lg border border-gray-200 p-4">
-      <p class="text-xs text-gray-500 uppercase tracking-wide">Databases</p>
-      <p id="stat-databases" class="text-2xl font-bold text-gray-800 mt-1">—</p>
-    </div>
-    <div class="bg-white rounded-lg border border-purple-200 bg-purple-50/30 p-4">
-      <p class="text-xs text-purple-500 uppercase tracking-wide font-semibold">High Model</p>
-      <p id="stat-default-high" class="text-sm font-semibold text-purple-700 mt-1 truncate">—</p>
-    </div>
-    <div class="bg-white rounded-lg border border-blue-200 bg-blue-50/30 p-4">
-      <p class="text-xs text-blue-500 uppercase tracking-wide font-semibold">Middle Model</p>
-      <p id="stat-default-middle" class="text-sm font-semibold text-blue-700 mt-1 truncate">—</p>
-    </div>
-    <div class="bg-white rounded-lg border border-gray-200 p-4">
-      <p class="text-xs text-gray-500 uppercase tracking-wide">Default Database</p>
-      <p id="stat-default-db" class="text-sm font-semibold text-brand-600 mt-1 truncate">—</p>
-    </div>
-  </div>
-
-  <!-- ====== TAB BAR ====== -->
-  <div class="flex gap-0 border-b border-gray-200 mb-6">
-    <button id="tab-models" onclick="switchTab('models')"
-      class="px-4 py-2 text-sm font-medium tab-active transition-colors">
-      Models
-    </button>
-    <button id="tab-databases" onclick="switchTab('databases')"
-      class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">
-      Databases
-    </button>
-  </div>
-
-  <!-- ====== MODELS TAB ====== -->
-  <div id="panel-models">
-    <!-- Tier default selectors -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
-      <div class="flex items-center gap-3 bg-purple-50 rounded-lg border border-purple-200 px-4 py-2.5">
-        <span class="text-sm font-semibold text-purple-700 whitespace-nowrap">High:</span>
-        <select id="default-high-select" onchange="markDirty()"
-          class="flex-1 text-sm border border-purple-300 rounded-md px-3 py-1.5 bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none">
-        </select>
+<!-- ====== TWO-PANEL LAYOUT ====== -->
+<div class="max-w-7xl mx-auto px-4 py-6 flex gap-6">
+  <!-- ====== SIDEBAR ====== -->
+  <aside class="w-64 flex-shrink-0">
+    <div class="bg-white rounded-lg border border-gray-200 sticky top-20">
+      <div class="px-4 py-3 border-b border-gray-100">
+        <p class="text-xs text-gray-500 uppercase tracking-wide font-semibold">Files</p>
       </div>
-      <div class="flex items-center gap-3 bg-blue-50 rounded-lg border border-blue-200 px-4 py-2.5">
-        <span class="text-sm font-semibold text-blue-700 whitespace-nowrap">Middle:</span>
-        <select id="default-middle-select" onchange="markDirty()"
-          class="flex-1 text-sm border border-blue-300 rounded-md px-3 py-1.5 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
-        </select>
+      <nav id="sidebar-nav" class="py-1 max-h-[calc(100vh-12rem)] overflow-y-auto">
+        <p class="px-4 py-3 text-sm text-gray-400">Loading…</p>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- ====== MAIN EDITOR AREA ====== -->
+  <main class="flex-1 min-w-0">
+
+    <!-- ====== TOAST CONTAINER ====== -->
+    <div id="toast" class="hidden fixed top-16 right-4 z-50 toast-in"></div>
+
+    <!-- ====== STATS CARDS (rich editor only) ====== -->
+    <div id="stats-cards" class="hidden grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+      <div class="bg-white rounded-lg border border-gray-200 p-4">
+        <p class="text-xs text-gray-500 uppercase tracking-wide">Models</p>
+        <p id="stat-models" class="text-2xl font-bold text-gray-800 mt-1">—</p>
       </div>
-      <div class="flex items-center gap-3 bg-gray-100 rounded-lg border border-gray-300 px-4 py-2.5">
-        <span class="text-sm font-semibold text-gray-700 whitespace-nowrap">Low:</span>
-        <select id="default-low-select" onchange="markDirty()"
-          class="flex-1 text-sm border border-gray-300 rounded-md px-3 py-1.5 bg-white focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none">
-        </select>
+      <div class="bg-white rounded-lg border border-gray-200 p-4">
+        <p class="text-xs text-gray-500 uppercase tracking-wide">Databases</p>
+        <p id="stat-databases" class="text-2xl font-bold text-gray-800 mt-1">—</p>
+      </div>
+      <div class="bg-white rounded-lg border border-purple-200 bg-purple-50/30 p-4">
+        <p class="text-xs text-purple-500 uppercase tracking-wide font-semibold">High Model</p>
+        <p id="stat-default-high" class="text-sm font-semibold text-purple-700 mt-1 truncate">—</p>
+      </div>
+      <div class="bg-white rounded-lg border border-blue-200 bg-blue-50/30 p-4">
+        <p class="text-xs text-blue-500 uppercase tracking-wide font-semibold">Middle Model</p>
+        <p id="stat-default-middle" class="text-sm font-semibold text-blue-700 mt-1 truncate">—</p>
+      </div>
+      <div class="bg-white rounded-lg border border-gray-200 p-4">
+        <p class="text-xs text-gray-500 uppercase tracking-wide">Default Database</p>
+        <p id="stat-default-db" class="text-sm font-semibold text-brand-600 mt-1 truncate">—</p>
       </div>
     </div>
 
-    <!-- Model cards -->
-    <div id="models-container" class="space-y-3"></div>
+    <!-- ====== RICH EDITOR PANELS ====== -->
+    <div id="rich-editor-panels" class="hidden">
+      <!-- ====== TAB BAR ====== -->
+      <div class="flex gap-0 border-b border-gray-200 mb-6">
+        <button id="tab-models" onclick="switchTab('models')"
+          class="px-4 py-2 text-sm font-medium tab-active transition-colors">
+          Models
+        </button>
+        <button id="tab-databases" onclick="switchTab('databases')"
+          class="px-4 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors">
+          Databases
+        </button>
+      </div>
 
-    <!-- Add button -->
-    <button onclick="addModel()"
-      class="mt-3 w-full border-2 border-dashed border-gray-300 text-gray-400 hover:text-brand-600 hover:border-brand-400 rounded-lg py-3 text-sm font-medium transition-colors">
-      + Add Model
-    </button>
-  </div>
+      <!-- ====== MODELS TAB ====== -->
+      <div id="panel-models">
+        <!-- Tier default selectors -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
+          <div class="flex items-center gap-3 bg-purple-50 rounded-lg border border-purple-200 px-4 py-2.5">
+            <span class="text-sm font-semibold text-purple-700 whitespace-nowrap">High:</span>
+            <select id="default-high-select" onchange="markDirty()"
+              class="flex-1 text-sm border border-purple-300 rounded-md px-3 py-1.5 bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none">
+            </select>
+          </div>
+          <div class="flex items-center gap-3 bg-blue-50 rounded-lg border border-blue-200 px-4 py-2.5">
+            <span class="text-sm font-semibold text-blue-700 whitespace-nowrap">Middle:</span>
+            <select id="default-middle-select" onchange="markDirty()"
+              class="flex-1 text-sm border border-blue-300 rounded-md px-3 py-1.5 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none">
+            </select>
+          </div>
+          <div class="flex items-center gap-3 bg-gray-100 rounded-lg border border-gray-300 px-4 py-2.5">
+            <span class="text-sm font-semibold text-gray-700 whitespace-nowrap">Low:</span>
+            <select id="default-low-select" onchange="markDirty()"
+              class="flex-1 text-sm border border-gray-300 rounded-md px-3 py-1.5 bg-white focus:ring-2 focus:ring-gray-500 focus:border-gray-500 outline-none">
+            </select>
+          </div>
+        </div>
 
-  <!-- ====== DATABASES TAB ====== -->
-  <div id="panel-databases" class="hidden">
-    <!-- Default selector -->
-    <div class="flex items-center gap-3 mb-4">
-      <label class="text-sm text-gray-600 font-medium">Default database:</label>
-      <select id="default-db-select" onchange="markDirty()"
-        class="text-sm border border-gray-300 rounded-md px-3 py-1.5 bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
-      </select>
+        <!-- Model cards -->
+        <div id="models-container" class="space-y-3"></div>
+
+        <!-- Add button -->
+        <button onclick="addModel()"
+          class="mt-3 w-full border-2 border-dashed border-gray-300 text-gray-400 hover:text-brand-600 hover:border-brand-400 rounded-lg py-3 text-sm font-medium transition-colors">
+          + Add Model
+        </button>
+      </div>
+
+      <!-- ====== DATABASES TAB ====== -->
+      <div id="panel-databases" class="hidden">
+        <!-- Default selector -->
+        <div class="flex items-center gap-3 mb-4">
+          <label class="text-sm text-gray-600 font-medium">Default database:</label>
+          <select id="default-db-select" onchange="markDirty()"
+            class="text-sm border border-gray-300 rounded-md px-3 py-1.5 bg-white focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none">
+          </select>
+        </div>
+
+        <!-- Database cards -->
+        <div id="databases-container" class="space-y-3"></div>
+
+        <!-- Add button -->
+        <button onclick="addDatabase()"
+          class="mt-3 w-full border-2 border-dashed border-gray-300 text-gray-400 hover:text-brand-600 hover:border-brand-400 rounded-lg py-3 text-sm font-medium transition-colors">
+          + Add Database
+        </button>
+      </div>
     </div>
 
-    <!-- Database cards -->
-    <div id="databases-container" class="space-y-3"></div>
+    <!-- ====== GENERIC YAML EDITOR ====== -->
+    <div id="generic-editor" class="hidden">
+      <div class="bg-white rounded-lg border border-gray-200 p-4">
+        <div class="flex items-center justify-between mb-3">
+          <label class="text-xs text-gray-500 uppercase tracking-wide font-semibold">YAML Editor</label>
+          <span class="text-xs text-gray-400">Edit as YAML — saved on Ctrl+S or click Save</span>
+        </div>
+        <textarea id="yaml-textarea"
+          class="w-full font-mono text-sm border border-gray-200 rounded p-3
+                 focus:ring-1 focus:ring-brand-500 focus:border-brand-500 outline-none
+                 bg-gray-50 resize-y"
+          rows="25"
+          oninput="markDirty()"
+          spellcheck="false"
+        ></textarea>
+      </div>
+    </div>
 
-    <!-- Add button -->
-    <button onclick="addDatabase()"
-      class="mt-3 w-full border-2 border-dashed border-gray-300 text-gray-400 hover:text-brand-600 hover:border-brand-400 rounded-lg py-3 text-sm font-medium transition-colors">
-      + Add Database
-    </button>
-  </div>
+    <!-- ====== EMPTY STATE ====== -->
+    <div id="empty-state" class="text-center py-16">
+      <svg class="w-12 h-12 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
+      <p class="text-gray-500 text-sm">Select a file from the sidebar to edit</p>
+    </div>
 
-</main>
+  </main>
+</div>
 
 <!-- ====== SCRIPTS ====== -->
 <script>
 // ============================================================
 // State
 // ============================================================
-let config = null;
-let originalConfig = null;  // for undo
+let files = [];              // from GET /api/files
+let currentFile = null;     // { name, path, is_rich }
+let config = null;          // loaded YAML content (as JSON) for current file
+let originalConfig = null;  // deep clone for undo
 let currentTab = 'models';
 let isDirty = false;
 
@@ -174,27 +225,93 @@ const driverColors = {
 };
 
 // ============================================================
-// Init
+// Init — load file list, then auto-select the rich editor file
 // ============================================================
-async function loadConfig() {
+async function init() {
+  await loadFileList();
+}
+
+async function loadFileList() {
   try {
-    const res = await fetch('/api/config');
+    const res = await fetch('/api/files');
     if (!res.ok) throw new Error(await res.text());
-    config = await res.json();
-    originalConfig = JSON.parse(JSON.stringify(config));  // deep clone
-    isDirty = false;
-    renderAll();
+    files = await res.json();
+    renderSidebar();
+
+    // Auto-select: rich editor file first, otherwise first file
+    if (files.length > 0) {
+      const richFile = files.find(f => f.is_rich);
+      await selectFile((richFile || files[0]).name);
+    }
   } catch (e) {
-    showToast('error', 'Failed to load config: ' + e.message);
+    showToast('error', 'Failed to load file list: ' + e.message);
   }
 }
 
-async function saveConfig() {
-  // Serialize current DOM state into config object
-  collectFormState();
+// ============================================================
+// File switching
+// ============================================================
+async function selectFile(name) {
+  // Guard against dirty state
+  if (isDirty && currentFile && currentFile.name !== name) {
+    if (!confirm(`You have unsaved changes to "${currentFile.name}". Discard them?`)) {
+      // Re-render sidebar to restore visual selection
+      renderSidebar();
+      return;
+    }
+  }
+
+  const file = files.find(f => f.name === name);
+  if (!file) return;
+
+  currentFile = file;
+  isDirty = false;
+  updateDirtyIndicator();
+  await loadCurrentFile();
+  renderSidebar();
+}
+
+async function loadCurrentFile() {
+  if (!currentFile) return;
 
   try {
-    const res = await fetch('/api/config', {
+    const res = await fetch('/api/files/' + encodeURIComponent(currentFile.name));
+    if (!res.ok) throw new Error(await res.text());
+    config = await res.json();
+    originalConfig = JSON.parse(JSON.stringify(config));
+    isDirty = false;
+    updateDirtyIndicator();
+    renderEditor();
+  } catch (e) {
+    showToast('error', 'Failed to load file: ' + e.message);
+  }
+}
+
+// ============================================================
+// Save / Undo (file-aware)
+// ============================================================
+async function saveCurrentFile() {
+  if (!currentFile) return;
+
+  // Collect state from the appropriate editor
+  if (currentFile.is_rich) {
+    collectFormState();
+  } else {
+    // Parse YAML from textarea
+    try {
+      config = jsyaml.load(document.getElementById('yaml-textarea').value);
+      if (config === null || config === undefined) {
+        showToast('error', 'YAML parsed to empty value');
+        return;
+      }
+    } catch (e) {
+      showToast('error', 'Invalid YAML: ' + e.message);
+      return;
+    }
+  }
+
+  try {
+    const res = await fetch('/api/files/' + encodeURIComponent(currentFile.name), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(config),
@@ -202,25 +319,119 @@ async function saveConfig() {
     if (!res.ok) throw new Error(await res.text());
     originalConfig = JSON.parse(JSON.stringify(config));
     isDirty = false;
-    showToast('success', 'Config saved to default.yaml');
+    updateDirtyIndicator();
+    showToast('success', `Saved ${currentFile.name}`);
   } catch (e) {
     showToast('error', 'Failed to save: ' + e.message);
   }
 }
 
-function undoChanges() {
+function undoCurrentFile() {
+  if (!currentFile) return;
   config = JSON.parse(JSON.stringify(originalConfig));
   isDirty = false;
-  renderAll();
+  updateDirtyIndicator();
+  renderEditor();
   showToast('info', 'Reverted to last saved state');
 }
 
 function markDirty() {
   isDirty = true;
+  updateDirtyIndicator();
+}
+
+function updateDirtyIndicator() {
+  const indicator = document.getElementById('dirty-indicator');
+  if (isDirty) {
+    indicator.classList.remove('hidden');
+  } else {
+    indicator.classList.add('hidden');
+  }
 }
 
 // ============================================================
-// Render
+// Sidebar rendering
+// ============================================================
+function renderSidebar() {
+  const nav = document.getElementById('sidebar-nav');
+
+  if (files.length === 0) {
+    nav.innerHTML = '<p class="px-4 py-3 text-sm text-gray-400">No YAML files found</p>';
+    return;
+  }
+
+  nav.innerHTML = files.map(f => {
+    const isActive = currentFile && currentFile.name === f.name;
+    const activeClass = isActive ? 'sidebar-item-active' : 'border-l-3 border-transparent hover:bg-gray-50';
+    const starIcon = f.is_rich ? '<span class="text-amber-400 text-xs" title="Rich editor">★</span>' : '';
+
+    // Truncate display name for long paths
+    const displayName = f.name.length > 28
+      ? '…' + f.name.slice(-27)
+      : f.name;
+
+    return `
+      <button onclick="selectFile('${esc(f.name)}')"
+        class="w-full text-left px-4 py-2 text-sm ${activeClass} transition-colors flex items-center gap-2">
+        <span class="text-gray-400 flex-shrink-0">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </span>
+        <span class="truncate ${isActive ? 'text-brand-700 font-medium' : 'text-gray-700'}">${esc(displayName)}</span>
+        ${starIcon}
+      </button>`;
+  }).join('');
+
+  // Update header badge
+  const badge = document.getElementById('header-badge');
+  if (currentFile) {
+    badge.textContent = currentFile.name;
+  } else {
+    badge.textContent = '—';
+  }
+}
+
+// ============================================================
+// Editor rendering (dispatches to rich or generic)
+// ============================================================
+function renderEditor() {
+  if (!currentFile) {
+    document.getElementById('stats-cards').classList.add('hidden');
+    document.getElementById('rich-editor-panels').classList.add('hidden');
+    document.getElementById('generic-editor').classList.add('hidden');
+    document.getElementById('empty-state').classList.remove('hidden');
+    return;
+  }
+
+  document.getElementById('empty-state').classList.add('hidden');
+
+  if (currentFile.is_rich) {
+    document.getElementById('stats-cards').classList.remove('hidden');
+    document.getElementById('rich-editor-panels').classList.remove('hidden');
+    document.getElementById('generic-editor').classList.add('hidden');
+    renderAll();
+  } else {
+    document.getElementById('stats-cards').classList.add('hidden');
+    document.getElementById('rich-editor-panels').classList.add('hidden');
+    document.getElementById('generic-editor').classList.remove('hidden');
+    renderGenericEditor();
+  }
+}
+
+function renderGenericEditor() {
+  const textarea = document.getElementById('yaml-textarea');
+  try {
+    textarea.value = jsyaml.dump(config, { indent: 2, lineWidth: -1, noRefs: true });
+  } catch (e) {
+    // Fallback: show as JSON if jsyaml fails
+    textarea.value = JSON.stringify(config, null, 2);
+  }
+}
+
+// ============================================================
+// Rich editor — render (unchanged logic from original)
 // ============================================================
 function renderAll() {
   updateStats();
@@ -482,12 +693,9 @@ function onFieldChange(section, idx, field, value) {
   if (idx >= 0 && idx < registry.length) {
     registry[idx][field] = value;
     markDirty();
-    // If id changed and it was a tier default, update the tier default pointer
+    // If id changed, re-render to update selectors and old id references
     if (field === 'id') {
-      if (config.models.default_model_high === registry[idx].id) {
-        // handled by reference — id is mutated in place
-      }
-      renderAll(); // re-render to update selectors and old id references
+      renderAll();
     } else {
       updateStats();
     }
@@ -504,7 +712,7 @@ function onPoolChange(idx, field, value) {
 }
 
 // ============================================================
-// Collect all form state before save
+// Collect all form state before save (rich editor only)
 // ============================================================
 function collectFormState() {
   // Update tier default selections
@@ -526,15 +734,10 @@ function collectFormState() {
       config.models.registry[idx][field] = value;
     }
   });
-
-  document.querySelectorAll('#databases-container input, #databases-container select').forEach(el => {
-    // Pool fields handled separately via onPoolChange
-    if (el.closest('[data-pool]')) return;
-  });
 }
 
 // ============================================================
-// Tab switching
+// Tab switching (rich editor only)
 // ============================================================
 function switchTab(tab) {
   currentTab = tab;
@@ -575,14 +778,14 @@ function esc(s) {
 document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key === 's') {
     e.preventDefault();
-    saveConfig();
+    saveCurrentFile();
   }
 });
 
 // ============================================================
 // Boot
 // ============================================================
-loadConfig();
+init();
 </script>
 
 </body>

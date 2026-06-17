@@ -1,0 +1,16 @@
+# dashboard.yaml — controls which YAML files the dashboard discovers and serves
+# Paths are relative to this file's location (project root).
+
+scan:
+  - path: .
+    recursive: false
+  - path: save
+    recursive: false
+  - path: template
+    recursive: true
+  - path: diagram
+    recursive: false
+
+# Which discovered file gets the schema-aware rich editor (Models/Databases tabs).
+# All other files use a generic YAML text editor.
+rich_editor: default.yaml
