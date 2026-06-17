@@ -9,3 +9,5 @@
 *.swp
 *.swo
 *~
+src/paas/__pycache__/
+src/paas/__pycache__/
