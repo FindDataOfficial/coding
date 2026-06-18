@@ -1,12 +1,12 @@
 ---
-name: daas-plan-creator
+name: fd-coding-plan-creator
 description: >
   Generate page and service plans from class diagrams and SQLAlchemy schemas.
   Plans describe what pages (UI) and services (backend) to build, which diagram
   classes and schema entities each one uses, and how they connect. Use this when
   the user wants to "plan the pages", "design the UI", "map out services", or
   figure out what screens and APIs are needed before writing code. This skill sits
-  between daas-schema-creator and daas-code-creator in the pipeline.
+  between fd-coding-schema-creator and fd-coding-code-creator in the pipeline.
 ---
 
 # Plan Creator
@@ -16,7 +16,7 @@ The plan describes what to build — pages (UI), services (backend logic),
 and their connections — before any implementation code is written.
 
 This is the "what screens and APIs do we need?" step. It bridges the gap
-between data design (schema) and code (daas-code-creator).
+between data design (schema) and code (fd-coding-code-creator).
 
 ## Where things live
 
@@ -340,8 +340,8 @@ Write the plan YAML to `plan/<mirror-path>/<name>-plan.yaml`.
 
 ### Phase 7: Offer to continue the pipeline
 
-After saving the plan, **ask the user**: "Plan saved. Want to generate the implementation code now? I can run `/daas-code-creator` with the diagram, schema, and plan."
+After saving the plan, **ask the user**: "Plan saved. Want to generate the implementation code now? I can run `/fd-coding-code-creator` with the diagram, schema, and plan."
 
-If the user says yes, invoke the Skill tool with `skill: "daas-code-creator"` and pass the diagram file path as args. The code-creator will use the plan to guide implementation.
+If the user says yes, invoke the Skill tool with `skill: "fd-coding-code-creator"` and pass the diagram file path as args. The code-creator will use the plan to guide implementation.
 
 If the user says no or "later", that's fine.

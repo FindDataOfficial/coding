@@ -1,5 +1,5 @@
 ---
-name: daas-code-creator
+name: fd-coding-code-creator
 description: >
   Generate Python implementation code from class diagrams and SQLAlchemy schemas.
   Use this skill whenever the user asks to generate code, implement classes,
@@ -29,7 +29,7 @@ Data entities already exist as SQLAlchemy models in `schema/`. Service classes
 are the runtime logic: managers, routers, allocators, deployers.
 
 Skip classes whose attributes are all scalars and whose methods are `toDict` /
-`fromDict` — those are data entities, handled by daas-schema-creator.
+`fromDict` — those are data entities, handled by fd-coding-schema-creator.
 
 ## Before you start
 

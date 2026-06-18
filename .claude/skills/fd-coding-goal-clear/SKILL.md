@@ -1,5 +1,5 @@
 ---
-name: daas-goal-clear
+name: fd-coding-goal-clear
 description: >
   Brainstorm and refine goals from goal/initial-goal/. Use when the user wants
   to discuss, clarify, break down, or improve a goal idea. Not for executing
@@ -85,11 +85,11 @@ Name the file: `goal/clear-goal/<slug>.yaml`
 
 ### Step 4: Offer to continue the pipeline
 
-After saving the refined goal, **ask the user**: "The goal is refined. Want to create a class diagram for it now? I can run `/daas-diagram-creator` with this file."
+After saving the refined goal, **ask the user**: "The goal is refined. Want to create a class diagram for it now? I can run `/fd-coding-diagram-creator` with this file."
 
-If the user says yes, invoke the Skill tool with `skill: "daas-diagram-creator"` and pass the clear-goal file path as args. This chains the pipeline: goal → diagram → schema → code.
+If the user says yes, invoke the Skill tool with `skill: "fd-coding-diagram-creator"` and pass the clear-goal file path as args. This chains the pipeline: goal → diagram → schema → code.
 
-If the user says no or "later", that's fine — they can always run daas-diagram-creator separately.
+If the user says no or "later", that's fine — they can always run fd-coding-diagram-creator separately.
 
 ---
 

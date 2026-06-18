@@ -1,5 +1,5 @@
 ---
-name: daas-project-builder
+name: fd-coding-project-builder
 description: >
   Build complete, tested projects from design artifacts using test-driven
   development. Reads goals, diagrams, and schemas, then writes tests first
@@ -15,7 +15,7 @@ Build a complete, tested project from the full design pipeline output.
 You read the goal (what to build), the diagram (class structure), and the
 schema (data layer), then use TDD to produce working code.
 
-The key difference from daas-code-creator: you write **tests first**, run them
+The key difference from fd-coding-code-creator: you write **tests first**, run them
 (they fail), write implementation, run them again (they pass), and
 automatically fix any bugs that tests catch.
 
@@ -30,7 +30,7 @@ automatically fix any bugs that tests catch.
 1. Read the goal file (both initial-goal and clear-goal if both exist) to understand what to build and the success criteria
 2. Read the diagram YAML to understand all classes, methods, and relationships
 3. Read the schema file to understand the data layer
-4. Check if `src/` already has code from daas-code-creator (you'll extend it with tests)
+4. Check if `src/` already has code from fd-coding-code-creator (you'll extend it with tests)
 5. Check if `test/` already has tests for this project
 
 ## TDD Workflow
@@ -62,7 +62,7 @@ Write the test file(s) before writing any implementation. Tests should:
 - Have descriptive names that explain what's being tested
 - Cover happy path + error cases + edge cases
 
-If `src/` already has code from daas-code-creator, write tests that verify
+If `src/` already has code from fd-coding-code-creator, write tests that verify
 the existing code works. If `src/` is empty, write the tests first and
 the implementation will follow.
 
