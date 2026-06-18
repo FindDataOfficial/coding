@@ -22,18 +22,18 @@ implementation has a clear blueprint.
 ## Where things live
 
 - **Template**: `template/diagram/template.diagram.yaml` — the canonical schema with placeholder data
-- **Input**: `goal/clear-goal/` — refined goals with design decisions (the primary input for forward-design)
-- **Context**: `goal/initial-goal/` — original goals with full requirements (may contain details lost in refinement)
-- **Output**: `diagram/` — generated diagrams go here
-- **Existing diagrams**: `diagram/` — check for prior work before creating a new one
-- **Directory structure**: Mirror the source's directory structure. `goal/clear-goal/PAAS/mcp.md` → `diagram/paas/mcp-diagram.yaml`. Keep the same relative path (case-insensitive) so diagrams are easy to find from their source.
+- **Input**: `.claude/skills/fd-coding-common-resources/goal/clear-goal/` — refined goals with design decisions (the primary input for forward-design)
+- **Context**: `.claude/skills/fd-coding-common-resources/goal/initial-goal/` — original goals with full requirements (may contain details lost in refinement)
+- **Output**: `.claude/skills/fd-coding-common-resources/diagram/` — generated diagrams go here
+- **Existing diagrams**: `.claude/skills/fd-coding-common-resources/diagram/` — check for prior work before creating a new one
+- **Directory structure**: Mirror the source's directory structure. `.claude/skills/fd-coding-common-resources/goal/clear-goal/PAAS/mcp.md` → `.claude/skills/fd-coding-common-resources/diagram/paas/mcp-diagram.yaml`. Keep the same relative path (case-insensitive) so diagrams are easy to find from their source.
 
 ## Before you start
 
 1. Read `template/diagram/template.diagram.yaml` to understand the exact YAML schema
-2. **Read the corresponding clear-goal file** — The clear-goal contains refined steps, design decisions, and constraints that shape the class design. Mirror the path: `goal/clear-goal/<path>/<name>.md` → `diagram/<path>/<name>-diagram.yaml`. If the user explicitly passes a different source file, use that instead.
-3. **Read the original initial-goal file** — The clear-goal is a summary of changes. The initial-goal has the full requirements, steps, and success criteria. Derive the path from the clear-goal's `source` field, or mirror from the clear-goal path: `goal/clear-goal/<path>/<name>.md` → `goal/initial-goal/<path>/<name>.md`.
-4. Check `diagram/` for any existing diagrams that relate to the current task
+2. **Read the corresponding clear-goal file** — The clear-goal contains refined steps, design decisions, and constraints that shape the class design. Mirror the path: `.claude/skills/fd-coding-common-resources/goal/clear-goal/<path>/<name>.md` → `.claude/skills/fd-coding-common-resources/diagram/<path>/<name>-diagram.yaml`. If the user explicitly passes a different source file, use that instead.
+3. **Read the original initial-goal file** — The clear-goal is a summary of changes. The initial-goal has the full requirements, steps, and success criteria. Derive the path from the clear-goal's `source` field, or mirror from the clear-goal path: `.claude/skills/fd-coding-common-resources/goal/clear-goal/<path>/<name>.md` → `.claude/skills/fd-coding-common-resources/goal/initial-goal/<path>/<name>.md`.
+4. Check `.claude/skills/fd-coding-common-resources/diagram/` for any existing diagrams that relate to the current task
 5. If the user mentions a specific codebase or feature, read the relevant source files to understand the domain
 
 ## YAML schema
@@ -85,7 +85,7 @@ Each relationship has:
 
 2. **Read the feature description** (if forward-designing): Extract nouns as candidate classes and verbs as candidate methods. Think about responsibilities — each class should have a single, clear purpose.
 
-3. **Check existing diagrams**: Look in `diagram/` for any diagrams that overlap with or relate to the current task. You may need to extend an existing diagram rather than start fresh.
+3. **Check existing diagrams**: Look in `.claude/skills/fd-coding-common-resources/diagram/` for any diagrams that overlap with or relate to the current task. You may need to extend an existing diagram rather than start fresh.
 
 ### Phase 2: Plan
 
@@ -111,7 +111,7 @@ Once the user approves the plan, generate the YAML file.
 - Class names: PascalCase (e.g., `UserService`, `OrderRepository`)
 - Attribute/method names: camelCase (e.g., `userId`, `calculateTotal`)
 - File name: kebab-case, descriptive (e.g., `mcp-diagram.yaml`, `order-system.yaml`)
-- Directory: mirror the source's directory structure (e.g., `goal/initial-goal/PAAS/mcp.md` → `diagram/paas/mcp-diagram.yaml`)
+- Directory: mirror the source's directory structure (e.g., `.claude/skills/fd-coding-common-resources/goal/initial-goal/PAAS/mcp.md` → `.claude/skills/fd-coding-common-resources/diagram/paas/mcp-diagram.yaml`)
 
 **Quality checks before saving:**
 - Every relationship `from` and `to` references a class that exists in the `classes` list
@@ -250,7 +250,7 @@ Notice: `Product` is referenced as a type but doesn't have its own class entry �
 ## Edge cases
 
 - **Large codebases**: Don't try to diagram everything. Focus on the subsystem the user asked about. If they say "the whole project", ask them to narrow the scope — a diagram with 50 classes is unreadable.
-- **Multiple diagrams**: If the user asks for diagrams of several subsystems, create separate files in `diagram/` (e.g., `diagram/auth.yaml`, `diagram/payments.yaml`).
+- **Multiple diagrams**: If the user asks for diagrams of several subsystems, create separate files in `.claude/skills/fd-coding-common-resources/diagram/` (e.g., `diagram/auth.yaml`, `diagram/payments.yaml`).
 - **Updating an existing diagram**: If `diagram/<name>.yaml` already exists, don't overwrite it silently. Show what changed and ask for confirmation.
 - **Empty methods list**: A class with no methods is valid (e.g., a DTO or value object). Use `methods: []`.
 - **External types**: If a class references a type from a library or another module, include it in the type field but don't create a class entry unless it's in scope.

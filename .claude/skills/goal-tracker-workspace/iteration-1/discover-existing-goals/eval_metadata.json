@@ -1,6 +1,0 @@
-{
-  "eval_id": 0,
-  "eval_name": "discover-existing-goals",
-  "prompt": "You are working in the test-project directory. Check if there are any goals defined in goal/initial-goal/, and if so, summarize what needs to be done. Do NOT actually execute any steps — just read and report what goals exist and what they involve.",
-  "assertions": []
-}

@@ -1,6 +1,0 @@
-{
-  "eval_id": 2,
-  "eval_name": "complete-goal",
-  "prompt": "You are working in the test-project directory. I've finished the \"Add Dark Mode to Dashboard\" goal — I added CSS variables, built a toggle component, wired up theme switching, saved the preference to localStorage, and tested it across all pages. Everything works. Please document this completion by creating the appropriate YAML file in goal/final-goal/. List these files as changed: dashboard/static/style.css, dashboard/static/index.html, dashboard/static/theme.js.",
-  "assertions": []
-}

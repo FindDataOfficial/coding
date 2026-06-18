@@ -21,9 +21,9 @@ automatically fix any bugs that tests catch.
 
 ## Where things live
 
-- **Input**: `goal/` (initial + clear), `diagram/`, `schema/` — the full design pipeline output
+- **Input**: `goal/` (initial + clear), `.claude/skills/fd-coding-common-resources/diagram/`, `.claude/skills/fd-coding-common-resources/schema/` — the full design pipeline output
 - **Output**: `src/` — tested implementation + `test/` — the test suite
-- **Directory structure**: Mirror the input. `diagram/paas/mcp-diagram.yaml` → `src/paas/` and `test/test_paas/`
+- **Directory structure**: Mirror the input. `.claude/skills/fd-coding-common-resources/diagram/paas/mcp-diagram.yaml` → `src/paas/` and `test/test_paas/`
 
 ## Before you start
 

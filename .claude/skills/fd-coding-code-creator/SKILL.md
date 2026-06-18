@@ -17,15 +17,15 @@ skill produces the service layer that wires everything together.
 
 ## Where things live
 
-- **Input**: `diagram/` — class diagrams (service class definitions) + `schema/` — SQLAlchemy models (data layer)
-- **Context**: `goal/clear-goal/` — business constraints and design decisions
+- **Input**: `.claude/skills/fd-coding-common-resources/diagram/` — class diagrams (service class definitions) + `.claude/skills/fd-coding-common-resources/schema/` — SQLAlchemy models (data layer)
+- **Context**: `.claude/skills/fd-coding-common-resources/goal/clear-goal/` — business constraints and design decisions
 - **Output**: `src/` — Python implementation files
-- **Directory structure**: Mirror the input (case-insensitive). `diagram/paas/mcp-diagram.yaml` → `src/paas/`
+- **Directory structure**: Mirror the input (case-insensitive). `.claude/skills/fd-coding-common-resources/diagram/paas/mcp-diagram.yaml` → `src/paas/`
 
 ## What gets generated
 
 Only **service classes** — classes from the diagram that are NOT data entities.
-Data entities already exist as SQLAlchemy models in `schema/`. Service classes
+Data entities already exist as SQLAlchemy models in `.claude/skills/fd-coding-common-resources/schema/`. Service classes
 are the runtime logic: managers, routers, allocators, deployers.
 
 Skip classes whose attributes are all scalars and whose methods are `toDict` /
@@ -34,9 +34,9 @@ Skip classes whose attributes are all scalars and whose methods are `toDict` /
 ## Before you start
 
 1. Read the diagram YAML file to understand all classes and relationships
-2. Read the corresponding schema file (mirror path: `diagram/<path>/<name>-diagram.yaml` → `schema/<path>/<name>.py`) to understand the data layer
-3. **Read the corresponding clear-goal file** (mirror path, case-insensitive: `diagram/<path>/<name>-diagram.yaml` → `goal/clear-goal/<path>/<name>.md`) for business constraints and design decisions that affect implementation
-4. Identify which classes are service classes (skip data entities — they're in `schema/`)
+2. Read the corresponding schema file (mirror path: `.claude/skills/fd-coding-common-resources/diagram/<path>/<name>-diagram.yaml` → `.claude/skills/fd-coding-common-resources/schema/<path>/<name>.py`) to understand the data layer
+3. **Read the corresponding clear-goal file** (mirror path, case-insensitive: `.claude/skills/fd-coding-common-resources/diagram/<path>/<name>-diagram.yaml` → `.claude/skills/fd-coding-common-resources/goal/clear-goal/<path>/<name>.md`) for business constraints and design decisions that affect implementation
+4. Identify which classes are service classes (skip data entities — they're in `.claude/skills/fd-coding-common-resources/schema/`)
 5. Check `src/` for any existing implementation files
 
 ## How to classify classes (same heuristic as schema-creator)
@@ -60,7 +60,7 @@ src/paas/
 └── docker_deployer.py   # DockerDeployer
 ```
 
-Each file should be self-contained but import from `schema/` and other
+Each file should be self-contained but import from `.claude/skills/fd-coding-common-resources/schema/` and other
 `src/` modules as needed.
 
 ## Code conventions

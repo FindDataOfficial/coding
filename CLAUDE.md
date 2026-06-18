@@ -8,7 +8,7 @@ A YAML-driven config harness with a web dashboard for editing. `default.yaml` is
 
 The dashboard provides a sidebar to switch between discovered files. `default.yaml` gets a schema-aware rich editor (Models/Databases tabs), while all other files get a generic YAML text editor with `js-yaml`.
 
-The `goal/` directory contains design docs for future work (scraping workflow, MCP server creation).
+The `.claude/skills/fd-coding-common-resources/goal/` directory contains design docs for future work (scraping workflow, MCP server creation).
 
 ## Commands
 

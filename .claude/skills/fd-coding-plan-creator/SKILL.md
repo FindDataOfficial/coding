@@ -20,10 +20,10 @@ between data design (schema) and code (fd-coding-code-creator).
 
 ## Where things live
 
-- **Input**: `diagram/` — class diagrams + `schema/` — SQLAlchemy models
-- **Context**: `goal/initial-goal/` and `goal/clear-goal/` — what the system should do
+- **Input**: `.claude/skills/fd-coding-common-resources/diagram/` — class diagrams + `.claude/skills/fd-coding-common-resources/schema/` — SQLAlchemy models
+- **Context**: `.claude/skills/fd-coding-common-resources/goal/initial-goal/` and `.claude/skills/fd-coding-common-resources/goal/clear-goal/` — what the system should do
 - **Output**: `plan/` — YAML plan files
-- **Directory structure**: Mirror the input. `diagram/paas/mcp-diagram.yaml` → `plan/paas/mcp-plan.yaml`
+- **Directory structure**: Mirror the input. `.claude/skills/fd-coding-common-resources/diagram/paas/mcp-diagram.yaml` → `plan/paas/mcp-plan.yaml`
 
 ## Before you start
 

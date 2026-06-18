@@ -1,7 +1,7 @@
 ---
 name: fd-coding-goal-clear
 description: >
-  Brainstorm and refine goals from goal/initial-goal/. Use when the user wants
+  Brainstorm and refine goals from .claude/skills/fd-coding-common-resources/goal/initial-goal/. Use when the user wants
   to discuss, clarify, break down, or improve a goal idea. Not for executing
   goals — for thinking through them. Trigger when the user mentions goals,
   brainstorming, refining plans, or wants to "think through" an idea before
@@ -10,22 +10,22 @@ description: >
 
 # Goal Clear
 
-You help the user brainstorm, clarify, and refine goals from `goal/initial-goal/`. Your job is to be a thinking partner — discuss the goal, challenge assumptions, suggest improvements, and help the user arrive at a well-thought-out version. When done, save the refined result to `goal/clear-goal/`.
+You help the user brainstorm, clarify, and refine goals from `.claude/skills/fd-coding-common-resources/goal/initial-goal/`. Your job is to be a thinking partner — discuss the goal, challenge assumptions, suggest improvements, and help the user arrive at a well-thought-out version. When done, save the refined result to `.claude/skills/fd-coding-common-resources/goal/clear-goal/`.
 
 **You do NOT execute goals.** You only help think through them. No coding plans, no implementation.
 
 ## Where things live
 
-- **Input**: `goal/initial-goal/` — raw goal files (the starting point)
-- **Context**: `goal/clear-goal/` — if a refined version already exists, read it to understand what's already been discussed and continue from there
-- **Output**: `goal/clear-goal/` — refined goal files (the brainstormed result)
-- **Directory structure**: Mirror the input. `goal/initial-goal/PAAS/mcp.md` → `goal/clear-goal/PAAS/mcp.md`
+- **Input**: `.claude/skills/fd-coding-common-resources/goal/initial-goal/` — raw goal files (the starting point)
+- **Context**: `.claude/skills/fd-coding-common-resources/goal/clear-goal/` — if a refined version already exists, read it to understand what's already been discussed and continue from there
+- **Output**: `.claude/skills/fd-coding-common-resources/goal/clear-goal/` — refined goal files (the brainstormed result)
+- **Directory structure**: Mirror the input. `.claude/skills/fd-coding-common-resources/goal/initial-goal/PAAS/mcp.md` → `.claude/skills/fd-coding-common-resources/goal/clear-goal/PAAS/mcp.md`
 
 ## Before you start
 
-1. Check `goal/initial-goal/` for existing goal files
+1. Check `.claude/skills/fd-coding-common-resources/goal/initial-goal/` for existing goal files
 2. If the user passes a specific goal file, use that one
-3. **Check for an existing clear-goal** — If `goal/clear-goal/<path>/<name>.md` already exists, read it to understand what was already discussed, what decisions were made, and continue refining from there
+3. **Check for an existing clear-goal** — If `.claude/skills/fd-coding-common-resources/goal/clear-goal/<path>/<name>.md` already exists, read it to understand what was already discussed, what decisions were made, and continue refining from there
 4. If no goals exist, offer to create one
 
 ## Workflow
@@ -36,7 +36,7 @@ Load goal → Brainstorm & refine → Save refined version
 
 ### Step 1: Load the goal
 
-Read the goal file from `goal/initial-goal/`. Extract:
+Read the goal file from `.claude/skills/fd-coding-common-resources/goal/initial-goal/`. Extract:
 
 - **Title**: What this goal is about
 - **Description**: The big picture
@@ -63,11 +63,11 @@ Don't just list questions — have a real discussion. Challenge the user's think
 
 ### Step 3: Save the refined version
 
-When the user is satisfied with the brainstormed result, save a YAML file to `goal/clear-goal/`:
+When the user is satisfied with the brainstormed result, save a YAML file to `.claude/skills/fd-coding-common-resources/goal/clear-goal/`:
 
 ```yaml
 goal: <goal-title>
-source: goal/initial-goal/<filename>.md
+source: .claude/skills/fd-coding-common-resources/goal/initial-goal/<filename>.md
 refined_at: <ISO 8601 timestamp>
 summary: |
   <2-3 sentence summary of the refined goal>
@@ -81,7 +81,7 @@ open_questions:
 notes: <optional, any insights from the discussion>
 ```
 
-Name the file: `goal/clear-goal/<slug>.yaml`
+Name the file: `.claude/skills/fd-coding-common-resources/goal/clear-goal/<slug>.yaml`
 
 ### Step 4: Offer to continue the pipeline
 
