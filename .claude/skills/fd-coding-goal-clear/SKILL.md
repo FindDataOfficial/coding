@@ -63,25 +63,9 @@ Don't just list questions — have a real discussion. Challenge the user's think
 
 ### Step 3: Save the refined version
 
-When the user is satisfied with the brainstormed result, save a YAML file to `.claude/skills/fd-coding-common-resources/goal/clear-goal/`:
+When the user is satisfied with the brainstormed result, save the refined goal to `.claude/skills/fd-coding-common-resources/goal/clear-goal/`.
 
-```yaml
-goal: <goal-title>
-source: .claude/skills/fd-coding-common-resources/goal/initial-goal/<filename>.md
-refined_at: <ISO 8601 timestamp>
-summary: |
-  <2-3 sentence summary of the refined goal>
-changes_made:
-  - <what changed from the original and why>
-steps_refined:
-  - <step 1>
-  - <step 2>
-open_questions:
-  - <anything still unresolved>
-notes: <optional, any insights from the discussion>
-```
-
-Name the file: `.claude/skills/fd-coding-common-resources/goal/clear-goal/<slug>.yaml`
+Use the template at `scripts/template.yaml` for the output format.
 
 ### Step 4: Offer to continue the pipeline
 

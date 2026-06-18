@@ -21,7 +21,7 @@ implementation has a clear blueprint.
 
 ## Where things live
 
-- **Template**: `template/diagram/template.diagram.yaml` — the canonical schema with placeholder data
+- **Template**: `.claude/skills/fd-coding-common-resources/template/diagram/template.diagram.yaml` — the canonical schema with placeholder data
 - **Input**: `.claude/skills/fd-coding-common-resources/goal/clear-goal/` — refined goals with design decisions (the primary input for forward-design)
 - **Context**: `.claude/skills/fd-coding-common-resources/goal/initial-goal/` — original goals with full requirements (may contain details lost in refinement)
 - **Output**: `.claude/skills/fd-coding-common-resources/diagram/` — generated diagrams go here
@@ -30,7 +30,7 @@ implementation has a clear blueprint.
 
 ## Before you start
 
-1. Read `template/diagram/template.diagram.yaml` to understand the exact YAML schema
+1. Read `.claude/skills/fd-coding-common-resources/template/diagram/template.diagram.yaml` to understand the exact YAML schema
 2. **Read the corresponding clear-goal file** — The clear-goal contains refined steps, design decisions, and constraints that shape the class design. Mirror the path: `.claude/skills/fd-coding-common-resources/goal/clear-goal/<path>/<name>.md` → `.claude/skills/fd-coding-common-resources/diagram/<path>/<name>-diagram.yaml`. If the user explicitly passes a different source file, use that instead.
 3. **Read the original initial-goal file** — The clear-goal is a summary of changes. The initial-goal has the full requirements, steps, and success criteria. Derive the path from the clear-goal's `source` field, or mirror from the clear-goal path: `.claude/skills/fd-coding-common-resources/goal/clear-goal/<path>/<name>.md` → `.claude/skills/fd-coding-common-resources/goal/initial-goal/<path>/<name>.md`.
 4. Check `.claude/skills/fd-coding-common-resources/diagram/` for any existing diagrams that relate to the current task
@@ -162,88 +162,7 @@ class Customer:
     def __init__(self, name: str, email: str): ...
 ```
 
-The resulting diagram (`diagram/order-system.yaml`) would be:
-```yaml
-classes:
-  - name: Order
-    attributes:
-      - visibility: "-"
-        name: orderId
-        type: String
-      - visibility: "-"
-        name: customer
-        type: Customer
-      - visibility: "-"
-        name: items
-        type: List<OrderItem>
-      - visibility: "-"
-        name: status
-        type: String
-    methods:
-      - visibility: "+"
-        name: addItem
-        return_type: void
-        parameters:
-          - name: item
-            type: OrderItem
-      - visibility: "+"
-        name: calculateTotal
-        return_type: float
-        parameters: []
-      - visibility: "+"
-        name: submit
-        return_type: void
-        parameters: []
-
-  - name: OrderItem
-    attributes:
-      - visibility: "-"
-        name: product
-        type: Product
-      - visibility: "-"
-        name: quantity
-        type: int
-    methods:
-      - visibility: "+"
-        name: subtotal
-        return_type: float
-        parameters: []
-
-  - name: Customer
-    attributes:
-      - visibility: "-"
-        name: name
-        type: String
-      - visibility: "-"
-        name: email
-        type: String
-    methods: []
-
-relationships:
-  - type: composition
-    from: Order
-    to: OrderItem
-    label: "contains"
-    multiplicity:
-      from: "1"
-      to: "many"
-
-  - type: association
-    from: Order
-    to: Customer
-    label: "placed by"
-    multiplicity:
-      from: "many"
-      to: "1"
-
-  - type: association
-    from: OrderItem
-    to: Product
-    label: "references"
-    multiplicity:
-      from: "many"
-      to: "1"
-```
+The resulting diagram would follow the format in `scripts/template.yaml`.
 
 Notice: `Product` is referenced as a type but doesn't have its own class entry — it's an external dependency. This is fine, but the diagram should note it (or include it if the scope warrants).
 
