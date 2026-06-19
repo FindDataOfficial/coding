@@ -24,7 +24,8 @@ to implementation.
 
 ## Before you start
 
-1. Read the diagram YAML file to understand the class structure
+1. **Read `.claude/skills/fd-coding-common-resources/README.md`** — Understand the full FD-Coding pipeline, where shared resources live, and what comes before/after this skill.
+2. Read the diagram YAML file to understand the class structure
 2. **Read the corresponding initial-goal file** — The initial-goal has the full requirements. Derive the path by mirroring: `.claude/skills/fd-coding-common-resources/diagram/<path>/<name>-diagram.yaml` → `.claude/skills/fd-coding-common-resources/goal/initial-goal/<path>/<name>.md` (case-insensitive).
 3. **Read the corresponding clear-goal file** — The clear-goal contains refined design decisions (e.g., "registry uses YAML not SQLite"). Derive: `.claude/skills/fd-coding-common-resources/diagram/<path>/<name>-diagram.yaml` → `.claude/skills/fd-coding-common-resources/goal/clear-goal/<path>/<name>.md` (case-insensitive). If it doesn't exist, proceed without it.
 4. Identify which classes are **data entities** (persistable) vs **service classes** (runtime-only), using both the diagram attributes AND the goal context

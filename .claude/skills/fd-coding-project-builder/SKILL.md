@@ -27,7 +27,8 @@ automatically fix any bugs that tests catch.
 
 ## Before you start
 
-1. Read the goal file (both initial-goal and clear-goal if both exist) to understand what to build and the success criteria
+1. **Read `.claude/skills/fd-coding-common-resources/README.md`** — Understand the full FD-Coding pipeline, where shared resources live, and what comes before/after this skill.
+2. Read the goal file (both initial-goal and clear-goal if both exist) to understand what to build and the success criteria
 2. Read the diagram YAML to understand all classes, methods, and relationships
 3. Read the schema file to understand the data layer
 4. Check if `src/` already has code from fd-coding-code-creator (you'll extend it with tests)

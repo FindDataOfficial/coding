@@ -23,7 +23,8 @@ You help the user brainstorm, clarify, and refine goals from `.claude/skills/fd-
 
 ## Before you start
 
-1. Check `.claude/skills/fd-coding-common-resources/goal/initial-goal/` for existing goal files
+1. **Read `.claude/skills/fd-coding-common-resources/README.md`** — Understand the full FD-Coding pipeline, where shared resources live, and what comes before/after this skill.
+2. Check `.claude/skills/fd-coding-common-resources/goal/initial-goal/` for existing goal files
 2. If the user passes a specific goal file, use that one
 3. **Check for an existing clear-goal** — If `.claude/skills/fd-coding-common-resources/goal/clear-goal/<path>/<name>.md` already exists, read it to understand what was already discussed, what decisions were made, and continue refining from there
 4. If no goals exist, offer to create one

@@ -30,7 +30,8 @@ implementation has a clear blueprint.
 
 ## Before you start
 
-1. Read `.claude/skills/fd-coding-common-resources/template/diagram/template.diagram.yaml` to understand the exact YAML schema
+1. **Read `.claude/skills/fd-coding-common-resources/README.md`** — Understand the full FD-Coding pipeline, where shared resources live, and what comes before/after this skill.
+2. Read `.claude/skills/fd-coding-common-resources/template/diagram/template.diagram.yaml` to understand the exact YAML schema
 2. **Read the corresponding clear-goal file** — The clear-goal contains refined steps, design decisions, and constraints that shape the class design. Mirror the path: `.claude/skills/fd-coding-common-resources/goal/clear-goal/<path>/<name>.md` → `.claude/skills/fd-coding-common-resources/diagram/<path>/<name>-diagram.yaml`. If the user explicitly passes a different source file, use that instead.
 3. **Read the original initial-goal file** — The clear-goal is a summary of changes. The initial-goal has the full requirements, steps, and success criteria. Derive the path from the clear-goal's `source` field, or mirror from the clear-goal path: `.claude/skills/fd-coding-common-resources/goal/clear-goal/<path>/<name>.md` → `.claude/skills/fd-coding-common-resources/goal/initial-goal/<path>/<name>.md`.
 4. Check `.claude/skills/fd-coding-common-resources/diagram/` for any existing diagrams that relate to the current task

@@ -33,7 +33,8 @@ Skip classes whose attributes are all scalars and whose methods are `toDict` /
 
 ## Before you start
 
-1. Read the diagram YAML file to understand all classes and relationships
+1. **Read `.claude/skills/fd-coding-common-resources/README.md`** — Understand the full FD-Coding pipeline, where shared resources live, and what comes before/after this skill.
+2. Read the diagram YAML file to understand all classes and relationships
 2. Read the corresponding schema file (mirror path: `.claude/skills/fd-coding-common-resources/diagram/<path>/<name>-diagram.yaml` → `.claude/skills/fd-coding-common-resources/schema/<path>/<name>.py`) to understand the data layer
 3. **Read the corresponding clear-goal file** (mirror path, case-insensitive: `.claude/skills/fd-coding-common-resources/diagram/<path>/<name>-diagram.yaml` → `.claude/skills/fd-coding-common-resources/goal/clear-goal/<path>/<name>.md`) for business constraints and design decisions that affect implementation
 4. Identify which classes are service classes (skip data entities — they're in `.claude/skills/fd-coding-common-resources/schema/`)

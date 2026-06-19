@@ -27,7 +27,8 @@ between data design (schema) and code (fd-coding-code-creator).
 
 ## Before you start
 
-1. Read the diagram YAML to understand all classes and relationships
+1. **Read `.claude/skills/fd-coding-common-resources/README.md`** — Understand the full FD-Coding pipeline, where shared resources live, and what comes before/after this skill.
+2. Read the diagram YAML to understand all classes and relationships
 2. Read the schema file to understand the data layer
 3. Read the goal files (initial + clear) to understand what the system needs to do
 4. Check `plan/` for any existing plans for this project
