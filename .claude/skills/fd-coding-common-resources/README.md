@@ -12,9 +12,9 @@ git clone https://github.com/FindDataOfficial/coding.git
 cd fd-coding-skills
 
 # Install (choose one)
-./install.sh              # → ~/.claude/skills/ (global, all projects)
-./install.sh --global     # → same as above
-./install.sh /path/to/my-project  # → project-specific .claude/skills/
+./install.sh              # → current project's .claude/skills/ (default)
+./install.sh --global     # → ~/.claude/skills/ (all projects)
+./install.sh /path/to/my-project  # → specific project's .claude/skills/
 ```
 
 Or install directly from GitHub in one line:

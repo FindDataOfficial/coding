@@ -1,17 +1,19 @@
 #!/bin/bash
 # install.sh — Install all fd-coding skills
 # Usage:
-#   ./install.sh                          → install to ~/.claude/skills/
-#   ./install.sh /path/to/project         → install to project's .claude/skills/
+#   ./install.sh                          → install to current project's .claude/skills/
+#   ./install.sh /path/to/project         → install to specified project
 #   ./install.sh --global                 → install to ~/.claude/skills/
 
 set -euo pipefail
 
 # Resolve target directory
-if [ "${1:-}" = "--global" ] || [ -z "${1:-}" ]; then
+if [ "${1:-}" = "--global" ]; then
   TARGET="$HOME/.claude/skills"
-else
+elif [ -n "${1:-}" ]; then
   TARGET="$1/.claude/skills"
+else
+  TARGET="$(pwd)/.claude/skills"
 fi
 
 # Find the source directory (where this script and the skills live)
