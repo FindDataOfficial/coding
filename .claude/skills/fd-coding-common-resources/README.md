@@ -4,6 +4,34 @@ Six Claude Code skills that form a complete design-to-implementation pipeline.
 Each skill reads the output of the previous one, produces its own artifact,
 and offers to chain to the next step.
 
+## Installation
+
+```bash
+# Clone the repo
+git clone https://github.com/shichengsi/fd-coding-skills.git
+cd fd-coding-skills
+
+# Install (choose one)
+./install.sh              # → ~/.claude/skills/ (global, all projects)
+./install.sh --global     # → same as above
+./install.sh /path/to/my-project  # → project-specific .claude/skills/
+```
+
+Or install directly from GitHub in one line:
+
+```bash
+git clone https://github.com/shichengsi/fd-coding-skills.git /tmp/fd-skills && \
+  /tmp/fd-skills/install.sh && rm -rf /tmp/fd-skills
+```
+
+## Sharing
+
+To share these skills with others:
+
+1. Push this repo to GitHub
+2. Others clone and run `./install.sh`
+3. To update: `git pull` in the cloned directory, then re-run `./install.sh`
+
 ## Pipeline
 
 ```
