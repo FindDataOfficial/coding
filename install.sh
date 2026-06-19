@@ -21,8 +21,8 @@ SOURCE="$SCRIPT_DIR/.claude/skills"
 echo "==> Installing fd-coding skills to: $TARGET"
 mkdir -p "$TARGET"
 
-# Copy all fd-coding-* skill directories
-for dir in "$SOURCE"/fd-coding-*; do
+# Copy all fd-* skill and resource directories
+for dir in "$SOURCE"/fd-*; do
   name="$(basename "$dir")"
   echo "    Copying $name..."
   rm -rf "$TARGET/$name"
