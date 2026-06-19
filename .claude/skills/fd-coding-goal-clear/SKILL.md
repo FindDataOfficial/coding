@@ -60,7 +60,7 @@ Discuss the goal with the user. Push their thinking. Here are the angles to expl
 - **Risks and unknowns** — What could go wrong? What do we not know yet?
 - **Success criteria sharpness** — Are they measurable? Testable? Actually the right things to measure?
 
-Don't just list questions — have a real discussion. Challenge the user's thinking. Suggest concrete changes. If something seems off, say so and propose an alternative.
+**When you have questions or need the user to make a decision, use the `AskUserQuestion` tool to present terminal choices.** Don't just list questions in text — give the user clickable options with a recommendation highlighted. This applies to: scope decisions, alternative approaches, splitting vs keeping together, and any ambiguous design choices.
 
 ### Step 3: Save the refined version
 
@@ -70,11 +70,7 @@ Use the template at `scripts/template.yaml` for the output format.
 
 ### Step 4: Offer to continue the pipeline
 
-After saving the refined goal, **ask the user**: "The goal is refined. Want to create a class diagram for it now? I can run `/fd-coding-diagram-creator` with this file."
-
-If the user says yes, invoke the Skill tool with `skill: "fd-coding-diagram-creator"` and pass the clear-goal file path as args. This chains the pipeline: goal → diagram → schema → code.
-
-If the user says no or "later", that's fine — they can always run fd-coding-diagram-creator separately.
+After saving the refined goal, use `AskUserQuestion` to ask: "Want to create a class diagram now?" with options "Yes, run diagram-creator" and "No, I'll do it later". If the user picks yes, invoke `skill: "fd-coding-diagram-creator"` with the clear-goal file path.
 
 ---
 
@@ -82,6 +78,6 @@ If the user says no or "later", that's fine — they can always run fd-coding-di
 
 - **Challenge, don't just accept** — The user brought this goal to brainstorm. If something doesn't make sense, say so. Propose alternatives.
 - **Be concrete** — Vague feedback is useless. "This step is too big" is bad. "Step 3 tries to do routing, monitoring, AND Docker — split it into 3" is good.
-- **Give the user choices** — When you see multiple valid paths, present options and let the user pick. Don't just list them — give a recommendation.
+- **Give the user choices** — When you see multiple valid paths, use `AskUserQuestion` to present options with a recommendation. Don't just list them in text — give clickable terminal choices.
 - **The refined version matters** — The `clear-goal/` YAML is the output. Make it useful as a future reference. Capture the thinking, not just the conclusions.
 - **One goal at a time** — Focus on a single goal. If the user mentions others, note them but stay on track.

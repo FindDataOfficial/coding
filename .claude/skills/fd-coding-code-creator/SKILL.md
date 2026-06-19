@@ -155,12 +155,11 @@ each relationship into code:
 
 ### Phase 2: Confirm with the user
 
-Present the plan:
+**Use `AskUserQuestion`** to present the plan and get approval:
 
 - Which classes will be generated (service classes)
 - Which are skipped (data entities, already in schema)
 - The file layout under `src/`
-- Any design decisions that affect the implementation
 
 ### Phase 3: Generate
 

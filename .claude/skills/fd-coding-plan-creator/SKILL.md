@@ -126,7 +126,7 @@ For each service class from the diagram:
 
 ### Phase 4: Confirm with the user
 
-Present the plan summary:
+**Use `AskUserQuestion`** to present the plan summary and get approval:
 
 - How many pages, what they do
 - How many services, what types
@@ -153,8 +153,4 @@ Write the plan YAML to `plan/<mirror-path>/<name>-plan.yaml`.
 
 ### Phase 7: Offer to continue the pipeline
 
-After saving the plan, **ask the user**: "Plan saved. Want to generate the implementation code now? I can run `/fd-coding-code-creator` with the diagram, schema, and plan."
-
-If the user says yes, invoke the Skill tool with `skill: "fd-coding-code-creator"` and pass the diagram file path as args. The code-creator will use the plan to guide implementation.
-
-If the user says no or "later", that's fine.
+After saving the plan, use `AskUserQuestion` to ask: "Want to generate the implementation code now?" with options "Yes, run code-creator" and "No, I'll do it later". If yes, invoke `skill: "fd-coding-code-creator"`.

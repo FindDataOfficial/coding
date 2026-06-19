@@ -98,7 +98,7 @@ Enter plan mode. Design the class diagram by thinking through:
 - **How do classes relate?** Draw relationships carefully. Prefer association over composition unless the lifecycle is truly tied. Only use inheritance when there's a genuine "is-a" relationship — composition is often a better choice.
 - **What's the visibility?** Public (+) for the API surface, private (-) for internal state, protected (#) for things subclasses need.
 
-Present the plan to the user. Ask clarifying questions when:
+Present the plan to the user. **Use the `AskUserQuestion` tool to present design choices as terminal options** — never just list questions in text. Use it when:
 - The feature description is ambiguous about class boundaries
 - It's unclear whether a relationship is composition or association
 - A class seems to have too many responsibilities (god class smell)
@@ -134,11 +134,7 @@ If validation fails, fix the issues and re-validate. Do not save a diagram that 
 
 ### Phase 5: Offer to continue the pipeline
 
-After saving the diagram, **ask the user**: "Diagram saved. Want to generate the SQLAlchemy schema from it? I can run `/fd-coding-schema-creator` with this diagram."
-
-If the user says yes, invoke the Skill tool with `skill: "fd-coding-schema-creator"` and pass the diagram file path as args. This chains the pipeline: diagram → schema → code.
-
-If the user says no or "later", that's fine — they can always run fd-coding-schema-creator separately.
+After saving the diagram, use `AskUserQuestion` to ask: "Want to generate the SQLAlchemy schema now?" with options "Yes, run schema-creator" and "No, I'll do it later". If yes, invoke `skill: "fd-coding-schema-creator"`.
 
 ## Example
 

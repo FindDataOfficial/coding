@@ -170,16 +170,13 @@ class EntityName(Base):
 
 ### Phase 2: Confirm with the user
 
-Present a summary before generating code:
+**Use `AskUserQuestion`** to present the classification decisions as terminal choices:
 
 - Which classes become models and why
 - Which classes are skipped and why
 - The relationship mapping decisions
-- The expected table count (it's OK if it's 1)
 
-This is the moment to catch mistakes — the user might want a class to be a
-model even though it looks like a service, or vice versa. Don't skip this
-step.
+This is the moment to catch mistakes — the user might want a class to be a model even though it looks like a service, or vice versa. Don't skip this step.
 
 ### Phase 3: Generate
 
@@ -210,8 +207,4 @@ Once confirmed, write the Python file to `schema/<mirror-path>.py`.
 
 ### Phase 5: Offer to continue the pipeline
 
-After saving the schema, **ask the user**: "Schema saved. Want to plan the pages and services now? I can run `/fd-coding-plan-creator` with this diagram and schema."
-
-If the user says yes, invoke the Skill tool with `skill: "fd-coding-plan-creator"` and pass the diagram file path as args. This chains the pipeline: schema → plan → code.
-
-If the user says no or "later", that's fine — they can always run fd-coding-plan-creator separately.
+After saving the schema, use `AskUserQuestion` to ask: "Want to plan pages and services now?" with options "Yes, run plan-creator" and "No, I'll do it later". If yes, invoke `skill: "fd-coding-plan-creator"`.

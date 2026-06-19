@@ -47,7 +47,7 @@ From the goal, diagram, and schema, identify what needs testing:
 3. **Read the schema** — Every data entity gets CRUD tests
 4. **Read the constraints** — Edge cases and error conditions become tests
 
-Present a test plan to the user:
+**Use `AskUserQuestion`** to present the test plan and get approval:
 
 - How many test files, what each covers
 - Which success criteria each test maps to
