@@ -22,8 +22,10 @@ automatically fix any bugs that tests catch.
 ## Where things live
 
 - **Input**: `goal/` (initial + clear), `.claude/skills/fd-coding-common-resources/diagram/`, `.claude/skills/fd-coding-common-resources/schema/` — the full design pipeline output
-- **Output**: Project root `src/` + `test/` — tested implementation and tests go directly into the project, not under `.claude/skills/`
-- **Directory structure**: Flat at project root. For example, `diagram/paas/mcp-diagram.yaml` → `src/paas/*.py` and `test/paas/*.py` at the project root.
+- **Output**: Project root — tested implementation and tests go directly into the project
+- **Unit tests**: `test/` — pytest for service classes, data entities, API routes
+- **E2E tests**: `cypress/e2e/` — Cypress for UI flows, page interactions, user journeys
+- **Directory structure**: Flat at project root. `diagram/paas/mcp-diagram.yaml` → `src/paas/*.py`, `test/paas/*.py`, `cypress/e2e/paas/*.cy.js`
 
 ## Before you start
 
@@ -53,9 +55,9 @@ From the goal, diagram, and schema, identify what needs testing:
 - Which success criteria each test maps to
 - What edge cases are covered
 
-### Phase 2: Write tests first (RED)
+### Phase 2: Write unit tests first (RED — pytest)
 
-Write the test file(s) before writing any implementation. Tests should:
+Write pytest files before writing any implementation. Tests should:
 
 - Use pytest conventions (matching the project's existing test style)
 - Use fixtures for shared setup (temp files, mock services)
@@ -67,35 +69,86 @@ If `src/` already has code from fd-coding-code-creator, write tests that verify
 the existing code works. If `src/` is empty, write the tests first and
 the implementation will follow.
 
-### Phase 3: Run tests and implement (GREEN)
+### Phase 2b: Write E2E tests (RED — Cypress)
 
-Run the tests. They should fail (RED phase). Then:
+After unit tests, write Cypress E2E tests for UI flows derived from the plan:
+
+- Every page from the plan gets at least one E2E test
+- Test user actions: navigate, fill forms, click buttons, verify results
+- Test page interactions: sidebar navigation, modal dialogs, form validation
+- Use `cy.visit()`, `cy.get()`, `cy.contains()`, `cy.should()` patterns
+- Place tests at `cypress/e2e/<path>/<page>.cy.js`
+
+```javascript
+// cypress/e2e/paas/server-list.cy.js
+describe('Server List Page', () => {
+  beforeEach(() => {
+    cy.visit('/servers');
+  });
+
+  it('displays all registered servers', () => {
+    cy.get('[data-cy=server-row]').should('have.length.at.least', 1);
+  });
+
+  it('can navigate to deploy page', () => {
+    cy.contains('Deploy New Server').click();
+    cy.url().should('include', '/servers/deploy');
+  });
+
+  it('can start a stopped server', () => {
+    cy.contains('tr', 'test-server')
+      .contains('Start').click();
+    cy.contains('tr', 'test-server')
+      .find('[data-cy=status-badge]').should('contain', 'running');
+  });
+});
+```
+
+### Phase 3: Run unit tests and implement (GREEN)
+
+Run pytest. Tests should fail (RED phase). Then:
 
 1. If `src/` already exists, fix bugs until tests pass
 2. If `src/` is empty, implement the minimum code to make each test pass
-3. Run tests after each change — fail fast, fix fast
+3. Run `pytest test/ -x --tb=short` after each change — fail fast, fix fast
 
-### Phase 4: Auto-repair bugs (REFACTOR + FIX)
+### Phase 4: Run E2E tests and fix UI (GREEN)
 
-This is the critical loop. After tests pass:
+Start the app and run Cypress:
 
-1. **Run the full test suite** — `pytest test/ -x --tb=short`
-2. **If any test fails**, analyze the error:
+```bash
+npx cypress run --spec "cypress/e2e/<path>/"
+```
+
+Fix any E2E failures — these are usually:
+- Missing `data-cy` attributes on elements
+- Wrong route paths (check the plan's `route` field)
+- API not returning expected data (check service implementation)
+
+### Phase 5: Auto-repair bugs (REFACTOR + FIX)
+
+This is the critical loop. After all tests pass:
+
+1. **Run unit tests** — `pytest test/ -x --tb=short`
+2. **Run E2E tests** — `npx cypress run`
+3. **If any test fails**, analyze the error:
    - Import error → fix the import path
    - Assertion error → fix the logic
    - AttributeError → check the diagram for the correct method name
    - Type error → fix the type annotation
-3. **Fix the bug**, re-run, repeat until ALL tests pass
-4. **Never leave a failing test** — either fix the code or fix the test
+   - Cypress timeout → check the element selector or API response
+4. **Fix the bug**, re-run both suites, repeat until ALL tests pass
+5. **Never leave a failing test** — either fix the code or fix the test
    (if the test expectation was wrong)
 
-### Phase 5: Verify against success criteria
+### Phase 6: Verify against success criteria
 
 Cross-check the goal's success criteria against the passing tests:
 
-- Every success criterion has a test that verifies it
+- Every success criterion has a pytest unit test that verifies it
+- Every page from the plan has a Cypress E2E test
 - Every constraint is tested (or at least considered)
-- The test output is clean — no warnings, no skipped tests
+- Both test suites pass clean — no warnings, no skipped tests, no flaky retries
 
 ## Test patterns
 
@@ -177,9 +230,12 @@ Common bugs and their fixes:
 Before declaring the project built:
 
 - [ ] `pytest test/ -q` passes with zero failures
-- [ ] Every success criterion from the goal has a corresponding test
-- [ ] Every public method from the diagram has a test
+- [ ] `npx cypress run` passes with zero failures
+- [ ] Every success criterion from the goal has a corresponding unit test
+- [ ] Every page from the plan has a corresponding E2E test
+- [ ] Every public method from the diagram has a unit test
 - [ ] Error cases are tested (not just happy path)
+- [ ] Pages use `data-cy` attributes for Cypress selectors
 - [ ] No bare `except:` in tests or implementation
 - [ ] All imports resolve to existing modules
 - [ ] Test files follow the project's existing test conventions (conftest.py fixtures, temp files)
