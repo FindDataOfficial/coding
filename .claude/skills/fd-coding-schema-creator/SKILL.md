@@ -20,7 +20,7 @@ to implementation.
 - **Context**: `.claude/skills/fd-coding-common-resources/goal/initial-goal/` — original requirements and success criteria (primary context)
 - **Context**: `.claude/skills/fd-coding-common-resources/goal/clear-goal/` — design decisions from brainstorming (extra context, may not exist)
 - **Output**: `.claude/skills/fd-coding-common-resources/schema/` — Python files with SQLAlchemy models
-- **Directory structure**: Mirror the input (case-insensitive). `.claude/skills/fd-coding-common-resources/diagram/paas/mcp-diagram.yaml` → `.claude/skills/fd-coding-common-resources/schema/paas/mcp.py`
+- **Directory structure**: Mirror the input. The sub-directory is determined by what already exists on the filesystem from diagram-creator. Read the diagram path and use the same directory name for the schema output.
 
 ## Before you start
 

@@ -19,15 +19,15 @@ You help the user brainstorm, clarify, and refine goals from `.claude/skills/fd-
 - **Input**: `.claude/skills/fd-coding-common-resources/goal/initial-goal/` — raw goal files (the starting point)
 - **Context**: `.claude/skills/fd-coding-common-resources/goal/clear-goal/` — if a refined version already exists, read it to understand what's already been discussed and continue from there
 - **Output**: `.claude/skills/fd-coding-common-resources/goal/clear-goal/` — refined goal files (the brainstormed result)
-- **Directory structure**: Mirror the input. `.claude/skills/fd-coding-common-resources/goal/initial-goal/PAAS/mcp.md` → `.claude/skills/fd-coding-common-resources/goal/clear-goal/PAAS/mcp.md`
+- **Directory structure**: The sub-directory name is NOT hardcoded. Always ask the user for the project name first, then use it. Example: user says "my-app" → `.claude/skills/fd-coding-common-resources/goal/clear-goal/my-app/mcp.md`
 
 ## Before you start
 
 1. **Read `.claude/skills/fd-coding-common-resources/README.md`** — Understand the full FD-Coding pipeline, where shared resources live, and what comes before/after this skill.
 2. Check `.claude/skills/fd-coding-common-resources/goal/initial-goal/` for existing goal files
-2. If the user passes a specific goal file, use that one
-3. **Check for an existing clear-goal** — If `.claude/skills/fd-coding-common-resources/goal/clear-goal/<path>/<name>.md` already exists, read it to understand what was already discussed, what decisions were made, and continue refining from there
-4. If no goals exist, offer to create one
+3. If the user passes a specific goal file, use that one
+4. **Check for an existing clear-goal** — If `.claude/skills/fd-coding-common-resources/goal/clear-goal/<path>/<name>.md` already exists, read it to understand what was already discussed, what decisions were made, and continue refining from there
+5. If no goals exist, offer to create one
 
 ## Workflow
 
@@ -35,9 +35,11 @@ You help the user brainstorm, clarify, and refine goals from `.claude/skills/fd-
 Load goal → Brainstorm & refine → Save refined version
 ```
 
-### Step 1: Load the goal
+### Step 1: Ask for the project name and load the goal
 
-Read the goal file from `.claude/skills/fd-coding-common-resources/goal/initial-goal/`. Extract:
+**First, use `AskUserQuestion` to ask: "What's the project name?"** This name becomes the sub-directory for ALL downstream outputs (goal, diagram, schema, plan, src, test). Example: user says `"my-app"` → everything goes under `my-app/`.
+
+Then read the goal file from `.claude/skills/fd-coding-common-resources/goal/initial-goal/`. Extract:
 
 - **Title**: What this goal is about
 - **Description**: The big picture

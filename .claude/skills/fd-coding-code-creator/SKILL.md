@@ -20,7 +20,7 @@ skill produces the service layer that wires everything together.
 - **Input**: `.claude/skills/fd-coding-common-resources/diagram/` — class diagrams (service class definitions) + `.claude/skills/fd-coding-common-resources/schema/` — SQLAlchemy models (data layer)
 - **Context**: `.claude/skills/fd-coding-common-resources/goal/clear-goal/` — business constraints and design decisions
 - **Output**: `src/` — Python implementation files
-- **Directory structure**: Mirror the input (case-insensitive). `.claude/skills/fd-coding-common-resources/diagram/paas/mcp-diagram.yaml` → `src/paas/`
+- **Directory structure**: Mirror the input. The sub-directory is determined by what already exists on the filesystem. Read the diagram path and use the same directory name for the src output.
 
 ## What gets generated
 

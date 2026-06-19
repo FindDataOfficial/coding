@@ -25,7 +25,7 @@ automatically fix any bugs that tests catch.
 - **Output**: Project root — tested implementation and tests go directly into the project
 - **Unit tests**: `test/` — pytest for service classes, data entities, API routes
 - **E2E tests**: `cypress/e2e/` — Cypress for UI flows, page interactions, user journeys
-- **Directory structure**: Flat at project root. `diagram/paas/mcp-diagram.yaml` → `src/paas/*.py`, `test/paas/*.py`, `cypress/e2e/paas/*.cy.js`
+- **Directory structure**: Mirror the input. The sub-directory is determined by what already exists on the filesystem. Read the diagram path and use the same directory name for src, test, and cypress output.
 
 ## Before you start
 

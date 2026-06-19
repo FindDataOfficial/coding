@@ -26,7 +26,7 @@ implementation has a clear blueprint.
 - **Context**: `.claude/skills/fd-coding-common-resources/goal/initial-goal/` — original goals with full requirements (may contain details lost in refinement)
 - **Output**: `.claude/skills/fd-coding-common-resources/diagram/` — generated diagrams go here
 - **Existing diagrams**: `.claude/skills/fd-coding-common-resources/diagram/` — check for prior work before creating a new one
-- **Directory structure**: Mirror the source's directory structure. `.claude/skills/fd-coding-common-resources/goal/clear-goal/PAAS/mcp.md` → `.claude/skills/fd-coding-common-resources/diagram/paas/mcp-diagram.yaml`. Keep the same relative path (case-insensitive) so diagrams are easy to find from their source.
+- **Directory structure**: Mirror the source. The sub-directory is determined by what goal-clear already created on the filesystem. Read the clear-goal path and use the same directory name for the diagram output.
 
 ## Before you start
 

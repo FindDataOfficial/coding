@@ -23,7 +23,7 @@ between data design (schema) and code (fd-coding-code-creator).
 - **Input**: `.claude/skills/fd-coding-common-resources/diagram/` — class diagrams + `.claude/skills/fd-coding-common-resources/schema/` — SQLAlchemy models
 - **Context**: `.claude/skills/fd-coding-common-resources/goal/initial-goal/` and `.claude/skills/fd-coding-common-resources/goal/clear-goal/` — what the system should do
 - **Output**: `plan/` — YAML plan files
-- **Directory structure**: Mirror the input. `.claude/skills/fd-coding-common-resources/diagram/paas/mcp-diagram.yaml` → `plan/paas/mcp-plan.yaml`
+- **Directory structure**: Mirror the input. The sub-directory is determined by what already exists on the filesystem. Read the diagram path and use the same directory name for the plan output.
 
 ## Before you start
 
