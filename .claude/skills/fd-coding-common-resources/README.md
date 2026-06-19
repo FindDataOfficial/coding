@@ -8,7 +8,7 @@ and offers to chain to the next step.
 
 ```bash
 # Clone the repo
-git clone https://github.com/shichengsi/fd-coding-skills.git
+git clone https://github.com/FindDataOfficial/coding.git
 cd fd-coding-skills
 
 # Install (choose one)
@@ -20,7 +20,7 @@ cd fd-coding-skills
 Or install directly from GitHub in one line:
 
 ```bash
-git clone https://github.com/shichengsi/fd-coding-skills.git /tmp/fd-skills && \
+git clone https://github.com/FindDataOfficial/coding.git /tmp/fd-skills && \
   /tmp/fd-skills/install.sh && rm -rf /tmp/fd-skills
 ```
 
