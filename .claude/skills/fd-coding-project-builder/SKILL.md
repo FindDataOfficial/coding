@@ -22,8 +22,8 @@ automatically fix any bugs that tests catch.
 ## Where things live
 
 - **Input**: `goal/` (initial + clear), `.claude/skills/fd-coding-common-resources/diagram/`, `.claude/skills/fd-coding-common-resources/schema/` — the full design pipeline output
-- **Output**: `src/` — tested implementation + `test/` — the test suite
-- **Directory structure**: Mirror the input. `.claude/skills/fd-coding-common-resources/diagram/paas/mcp-diagram.yaml` → `src/paas/` and `test/test_paas/`
+- **Output**: Project root `src/` + `test/` — tested implementation and tests go directly into the project, not under `.claude/skills/`
+- **Directory structure**: Flat at project root. For example, `diagram/paas/mcp-diagram.yaml` → `src/paas/*.py` and `test/paas/*.py` at the project root.
 
 ## Before you start
 
