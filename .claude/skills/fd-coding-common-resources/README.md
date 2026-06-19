@@ -7,19 +7,13 @@ and offers to chain to the next step.
 ## Installation
 
 ```bash
-# Clone the repo
-git clone https://github.com/FindDataOfficial/coding.git
-cd fd-coding-skills
+# One-liner (project-scope, recommended)
+curl -fsSL https://raw.githubusercontent.com/FindDataOfficial/coding/master/install.sh | bash
 
-# Install (choose one)
-./install.sh              # → current project's .claude/skills/ (default)
-./install.sh --global     # → ~/.claude/skills/ (all projects)
-./install.sh /path/to/my-project  # → specific project's .claude/skills/
-```
+# One-liner (global)
+curl -fsSL https://raw.githubusercontent.com/FindDataOfficial/coding/master/install.sh | bash -s -- --global
 
-Or install directly from GitHub in one line:
-
-```bash
+# Or clone first, then install
 git clone https://github.com/FindDataOfficial/coding.git /tmp/fd-skills && \
   /tmp/fd-skills/install.sh && rm -rf /tmp/fd-skills
 ```
